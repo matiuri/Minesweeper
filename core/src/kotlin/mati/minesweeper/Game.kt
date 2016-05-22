@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import mati.advancedgdx.AdvancedGame
@@ -23,16 +24,32 @@ class Game : AdvancedGame() {
     private fun prepare() {
         scrManager.add("Title", Title(this))
         astManager.queue("UbuntuBGen", "fonts/Ubuntu-B.ttf", FreeTypeFontGenerator::class)
-                .queue("Title", "TitleFont", BitmapFont::class,
-                        FontLoaderParameter(astManager["UbuntuBGen"], {
-                            it.size = 64
-                            it.color = Color.YELLOW
-                            it.borderColor = Color.BLACK
-                            it.borderWidth = 5f
-                        })).load {
-            scrManager.loadAll()
-            scrManager.change("Title")
-        }
+                .queue("UbuntuRGen", "fonts/Ubuntu-R.ttf", FreeTypeFontGenerator::class)
+                .queue("Title", "TitleFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuBGen"]) {
+                    it.size = 64
+                    it.color = Color.YELLOW
+                    it.borderColor = Color.BLACK
+                    it.borderWidth = 5f
+                })
+                .queue("GeneralW", "GeneralFontW", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                    it.size = 32
+                    it.color = Color.WHITE
+                    it.borderColor = Color.BLACK
+                    it.borderWidth = 1f
+                })
+                .queue("GeneralB", "GeneralFontB", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                    it.size = 32
+                    it.color = Color.BLACK
+                    it.borderColor = Color.WHITE
+                    it.borderWidth = 1f
+                })
+                .queue("ButtonUp", "GUI/ButtonUp.png", Texture::class)
+                .queue("ButtonDown", "GUI/ButtonDown.png", Texture::class)
+                .queue("ButtonLocked", "GUI/ButtonLocked.png", Texture::class)
+                .load {
+                    scrManager.loadAll()
+                    scrManager.change("Title")
+                }
     }
 
     override fun render() {
