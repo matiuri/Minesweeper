@@ -5,11 +5,15 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import mati.advancedgdx.AdvancedGame
 import mati.advancedgdx.assets.FontLoader.FontLoaderParameter
+import mati.advancedgdx.utils.isDesktop
+import mati.minesweeper.board.Cell
+import mati.minesweeper.screens.GameS
 import mati.minesweeper.screens.Title
 
 class Game : AdvancedGame() {
@@ -22,7 +26,7 @@ class Game : AdvancedGame() {
     }
 
     private fun prepare() {
-        scrManager.add("Title", Title(this))
+        scrManager.add("Title", Title(this)).add("Game", GameS(this))
         astManager.queue("UbuntuBGen", "fonts/Ubuntu-B.ttf", FreeTypeFontGenerator::class)
                 .queue("UbuntuRGen", "fonts/Ubuntu-R.ttf", FreeTypeFontGenerator::class)
                 .queue("Title", "TitleFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuBGen"]) {
@@ -46,7 +50,18 @@ class Game : AdvancedGame() {
                 .queue("ButtonUp", "GUI/ButtonUp.png", Texture::class)
                 .queue("ButtonDown", "GUI/ButtonDown.png", Texture::class)
                 .queue("ButtonLocked", "GUI/ButtonLocked.png", Texture::class)
+                .queue("CellUp", "game/CellUp.png", Texture::class)
+                .queue("CellDown", "game/CellDown.png", Texture::class)
+                .queue("CellOpen", "game/CellOpen.png", Texture::class)
+                .queue("N", "game/", ".png", Texture::class, 1, 7)
+                .queue("Mine", "game/Mine.png", Texture::class)
+                .queue("Flag", "game/Flag.png", Texture::class)
+                .queue("CursorBlue", "GUI/CursorBlue.png", Pixmap::class)
+                .queue("CursorRed", "GUI/CursorRed.png", Pixmap::class)
                 .load {
+                    if (isDesktop())
+                        Gdx.graphics.setCursor(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0))
+                    Cell.Static.init(this)
                     scrManager.loadAll()
                     scrManager.change("Title")
                 }

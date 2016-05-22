@@ -36,14 +36,19 @@ class Title(game: Game) : Screen(game) {
         title = createLabel("Minesweeper", game.astManager["Title", BitmapFont::class])
         table.add(title).colspan(2).pad(10f)
         table.row()
-        table.add(createButton("Play", game.astManager["GeneralB", BitmapFont::class],
-                createNPD(game.astManager["ButtonLocked", Texture::class], 8),
-                createNPD(game.astManager["ButtonLocked", Texture::class], 8))).pad(5f).fill()
+        val play = createButton("Play", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        play.color = Color.BLUE
+        table.add(play).pad(5f).fill()
         val exit: TextButton = createButton("Exit", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
         exit.color = Color.RED
         table.add(exit).pad(5f).fill()
+        play.addListener1 { event, actor ->
+            game.scrManager.change("Game")
+        }
         exit.addListener1 { e, a ->
             Gdx.app.exit()
         }

@@ -2,6 +2,7 @@
 lib
 *.l
 untracked/
+.directory
 
 ## Java
 *.class
