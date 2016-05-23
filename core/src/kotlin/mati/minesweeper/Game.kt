@@ -65,7 +65,7 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
                 .load {
                     if (isDesktop())
                         Gdx.graphics.setCursor(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0))
-                    Cell.Static.init(this)
+                    Cell.init(this)
                     scrManager.loadAll()
                     scrManager.change("Title")
                 }
