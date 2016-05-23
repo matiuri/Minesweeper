@@ -10,10 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import mati.advancedgdx.screens.Screen
-import mati.advancedgdx.utils.addListener1
-import mati.advancedgdx.utils.createButton
-import mati.advancedgdx.utils.createLabel
-import mati.advancedgdx.utils.createNPD
+import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
 import kotlin.properties.Delegates
 
@@ -48,6 +45,8 @@ class Title(game: Game) : Screen(game) {
         table.add(exit).pad(5f).fill()
         play.addListener1 { event, actor ->
             game.scrManager.change("Game")
+            if (isDesktop())
+                Gdx.graphics.setCursor((game as Game).cursors[1])
         }
         exit.addListener1 { e, a ->
             Gdx.app.exit()

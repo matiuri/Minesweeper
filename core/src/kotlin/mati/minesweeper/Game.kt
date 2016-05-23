@@ -3,10 +3,7 @@ package mati.minesweeper
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.scenes.scene2d.InputListener
@@ -17,9 +14,12 @@ import mati.minesweeper.board.Cell
 import mati.minesweeper.input.CellInputListener
 import mati.minesweeper.screens.GameS
 import mati.minesweeper.screens.Title
+import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) : AdvancedGame() {
+    var cursors: Array<Cursor> by Delegates.notNull<Array<Cursor>>()
+
     override fun create() {
         super.create()
         init(this)
@@ -50,6 +50,12 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
                     it.borderColor = Color.WHITE
                     it.borderWidth = 1f
                 })
+                .queue("TimerF", "TimerFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                    it.size = 24
+                    it.color = Color.GOLD
+                    it.borderColor = Color.WHITE
+                    it.borderWidth = 0.5f
+                })
                 .queue("ButtonUp", "GUI/ButtonUp.png", Texture::class)
                 .queue("ButtonDown", "GUI/ButtonDown.png", Texture::class)
                 .queue("ButtonLocked", "GUI/ButtonLocked.png", Texture::class)
@@ -62,9 +68,14 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
                 .queue("Flag", "game/Flag.png", Texture::class)
                 .queue("CursorBlue", "GUI/CursorBlue.png", Pixmap::class)
                 .queue("CursorRed", "GUI/CursorRed.png", Pixmap::class)
+                .queue("GUI", "GUI/GUI.png", Texture::class)
+                .queue("GUIr", "GUI/GUIr.png", Texture::class)
                 .load {
-                    if (isDesktop())
-                        Gdx.graphics.setCursor(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0))
+                    if (isDesktop()) {
+                        cursors = arrayOf(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0),
+                                Gdx.graphics.newCursor(astManager["CursorRed", Pixmap::class], 0, 0))
+                        Gdx.graphics.setCursor(cursors[0])
+                    }
                     Cell.init(this)
                     scrManager.loadAll()
                     scrManager.change("Title")

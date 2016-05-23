@@ -1,5 +1,6 @@
 package mati.minesweeper.board
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -55,7 +56,17 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean) : Actor() 
                     batch.draw(down, getX(), getY(), width, height)
                 if (flagged) batch.draw(flag, getX(), getY(), width, height)
             } else {
-                batch.draw(open, getX(), getY(), width, height)
+                if (!selected)
+                    batch.draw(open, getX(), getY(), width, height)
+                else if (aroundFlags == aroundMines) {
+                    batch.color = Color.BLUE
+                    batch.draw(open, getX(), getY(), width, height)
+                    batch.color = Color.WHITE
+                } else {
+                    batch.color = Color.RED
+                    batch.draw(open, getX(), getY(), width, height)
+                    batch.color = Color.WHITE
+                }
                 if (mined)
                     batch.draw(mine.get(), getX(), getY(), width, height)
                 else if (aroundMines != 0) batch.draw(nums[aroundMines - 1], getX(), getY(), width, height)

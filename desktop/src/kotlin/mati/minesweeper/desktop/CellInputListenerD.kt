@@ -31,7 +31,11 @@ class CellInputListenerD(private val cell: Cell) : InputListener() {
                     (cell.parent as Board).openFirst(cell)
                 else
                     cell.open()
-            } else if (button == 2 && cell.selected) cell.openAround()
+                cell.selected = false
+            } else if (button == 2 && cell.selected) {
+                cell.openAround()
+                cell.selected = false
+            }
             checked = false
         }
     }
