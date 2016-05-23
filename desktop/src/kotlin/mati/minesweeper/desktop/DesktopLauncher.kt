@@ -13,5 +13,6 @@ fun main(arg: Array<String>) {
     cfg.fullscreen = true
     cfg.width = dm.width
     cfg.height = dm.height
-    LwjglApplication(Game(), cfg)
+    println(CellInputListenerD::class)
+    LwjglApplication(Game(CellInputListenerD::class), cfg)
 }

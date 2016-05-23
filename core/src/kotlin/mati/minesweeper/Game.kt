@@ -9,14 +9,17 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import mati.advancedgdx.AdvancedGame
 import mati.advancedgdx.assets.FontLoader.FontLoaderParameter
 import mati.advancedgdx.utils.isDesktop
 import mati.minesweeper.board.Cell
+import mati.minesweeper.input.CellInputListener
 import mati.minesweeper.screens.GameS
 import mati.minesweeper.screens.Title
+import kotlin.reflect.KClass
 
-class Game : AdvancedGame() {
+class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) : AdvancedGame() {
     override fun create() {
         super.create()
         init(this)
@@ -55,6 +58,7 @@ class Game : AdvancedGame() {
                 .queue("CellOpen", "game/CellOpen.png", Texture::class)
                 .queue("N", "game/", ".png", Texture::class, 1, 7)
                 .queue("Mine", "game/Mine.png", Texture::class)
+                .queue("Mine1", "game/Mine1.png", Texture::class)
                 .queue("Flag", "game/Flag.png", Texture::class)
                 .queue("CursorBlue", "GUI/CursorBlue.png", Pixmap::class)
                 .queue("CursorRed", "GUI/CursorRed.png", Pixmap::class)

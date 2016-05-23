@@ -9,3 +9,8 @@ sourceSets.main.java.srcDirs = [ "src/java", "src/kotlin" ]
 eclipse.project {
     name = appName + "-core"
 }
+buildscript {
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.0.2"
+}
