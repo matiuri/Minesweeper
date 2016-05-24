@@ -11,7 +11,7 @@ import mati.minesweeper.Game
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
-class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean) : Actor() {
+class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board: Board) : Actor() {
     var aroundMines: Int = 0
     var aroundFlags: Int = 0
     var opened: Boolean = false
@@ -75,7 +75,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean) : Actor() 
     }
 
     fun setAroundMines() {
-        val cells: Array<Array<Cell>> = (parent as Board).cells
+        val cells: Array<Array<Cell>> = board.cells
         for (x in (this.x - 1)..(this.x + 1)) {
             if (x < 0 || x >= cells.size) continue
             for (y in(this.y - 1)..(this.y + 1)) {
@@ -88,15 +88,22 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean) : Actor() 
     fun open() {
         opened = true
         if (mined) {
-            log.d("${this.javaClass.simpleName}", "Game Over")
-            (parent as Board).openMined()
+            // Game Over
+            board.timer.stop()
+            log.d("${this.javaClass.simpleName}", "Game Over. ${board.timer.label.text}")
+            board.openMined()
         } else {
-            openAround()
+            board.opened++
+            if (board.opened == board.totalClean) {
+                // WIN!
+                board.timer.stop()
+                log.d("${this.javaClass.simpleName}", "WIN! ${board.timer.label.text}")
+            } else openAround()
         }
     }
 
     fun flag() {
-        val cells: Array<Array<Cell>> = (parent as Board).cells
+        val cells: Array<Array<Cell>> = board.cells
         if (flagged) {
             flagged = false
             for (x in (this.x - 1)..(this.x + 1)) {
@@ -120,7 +127,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean) : Actor() 
 
     fun openAround() {
         if (aroundFlags == aroundMines) {
-            val cells: Array<Array<Cell>> = (parent as Board).cells
+            val cells: Array<Array<Cell>> = board.cells
             for (x in (this.x - 1)..(this.x + 1)) {
                 if (x < 0 || x >= cells.size) continue
                 for (y in(this.y - 1)..(this.y + 1)) {

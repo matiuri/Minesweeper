@@ -28,7 +28,7 @@ class GameS(game: Game) : Screen(game) {
 
     override fun show() {
         timer.reset()
-        stage.addActor(Board())
+        stage.addActor(Board(timer))
         val guiTop: Image = Image(createNPD(game.astManager["GUIr", Texture::class], 0, 0, 24, 24))
         guiTop.setBounds(0f, gui.height - 64, gui.width, 64f)
         guiTop.color = Color.BLUE

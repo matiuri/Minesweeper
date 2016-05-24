@@ -3,7 +3,6 @@ package mati.minesweeper.desktop
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import mati.minesweeper.board.Board
 import mati.minesweeper.board.Cell
 
 class CellInputListenerD(private val cell: Cell) : InputListener() {
@@ -27,8 +26,8 @@ class CellInputListenerD(private val cell: Cell) : InputListener() {
 //            log.d("${this.javaClass.simpleName}:${Thread.currentThread().stackTrace[1].methodName}",
 //                    "Button=$button, Flagged=${cell.flagged}, Opened=${cell.opened}")
             if (button == 0 && cell.selected) {
-                if ((cell.parent as Board).first)
-                    (cell.parent as Board).openFirst(cell)
+                if (cell.board.first)
+                    cell.board.openFirst(cell)
                 else
                     cell.open()
                 cell.selected = false

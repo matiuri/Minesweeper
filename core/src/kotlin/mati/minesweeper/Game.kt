@@ -32,6 +32,7 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
         scrManager.add("Title", Title(this)).add("Game", GameS(this))
         astManager.queue("UbuntuBGen", "fonts/Ubuntu-B.ttf", FreeTypeFontGenerator::class)
                 .queue("UbuntuRGen", "fonts/Ubuntu-R.ttf", FreeTypeFontGenerator::class)
+                .queue("UbuntuMRGen", "fonts/UbuntuMono-R.ttf", FreeTypeFontGenerator::class)
                 .queue("Title", "TitleFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuBGen"]) {
                     it.size = 64
                     it.color = Color.YELLOW
@@ -50,7 +51,7 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
                     it.borderColor = Color.WHITE
                     it.borderWidth = 1f
                 })
-                .queue("TimerF", "TimerFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                .queue("TimerF", "TimerFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuMRGen"]) {
                     it.size = 24
                     it.color = Color.GOLD
                     it.borderColor = Color.WHITE
