@@ -105,6 +105,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
     fun flag() {
         val cells: Array<Array<Cell>> = board.cells
         if (flagged) {
+            board.fCounter.unflag()
             flagged = false
             for (x in (this.x - 1)..(this.x + 1)) {
                 if (x < 0 || x >= cells.size) continue
@@ -114,6 +115,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
                 }
             }
         } else {
+            board.fCounter.flag()
             flagged = true
             for (x in (this.x - 1)..(this.x + 1)) {
                 if (x < 0 || x >= cells.size) continue

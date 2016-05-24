@@ -7,7 +7,6 @@ import mati.minesweeper.Game
 
 class Timer(private val game: Game) {
     val label: Label = createLabel("Time: 00:00:00:00", game.astManager["TimerF", BitmapFont::class])
-    val timeArr: IntArray = IntArray(4) { 0 }
     private var time: Float = 0f
     private var counting: Boolean = false
     private var colon: Boolean = true
@@ -32,9 +31,15 @@ class Timer(private val game: Game) {
     }
 
     fun update(delta: Float) {
-        if (!counting) return
+        if (counting) {
+            time += delta
+            colonTime += delta
+            if (colonTime >= 0.25f) {
+                colon = !colon
+                colonTime = 0f
+            }
+        }
 
-        time += delta
         val hf: Float = (time / 3600f)
         val h: Int = hf.toInt()
         val mf: Float = (hf - h) * 60f
@@ -43,17 +48,6 @@ class Timer(private val game: Game) {
         val s: Int = sf.toInt()
         val msf: Float = (sf - s) * 60f
         val ms: Int = 100 * msf.toInt() / 60
-
-        timeArr[0] = h
-        timeArr[1] = m
-        timeArr[2] = s
-        timeArr[3] = ms
-
-        colonTime += delta
-        if (colonTime >= 0.25f) {
-            colon = !colon
-            colonTime = 0f
-        }
 
         val colonS: String = if (colon) ":" else " "
 

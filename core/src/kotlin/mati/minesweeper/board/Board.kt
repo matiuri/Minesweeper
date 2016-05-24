@@ -3,6 +3,7 @@ package mati.minesweeper.board
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Group
 import mati.advancedgdx.utils.isDesktop
+import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
 import kotlin.properties.Delegates
 
@@ -14,6 +15,7 @@ class Board(val timer: Timer) : Group() {
     var first: Boolean = true
     var totalClean: Int = 0
     var opened: Int = 0
+    var fCounter: FlagCounter by Delegates.notNull<FlagCounter>()
 
     init {
         cells = Array(wh) { x ->
@@ -44,7 +46,9 @@ class Board(val timer: Timer) : Group() {
             }
         }
         cell.open()
+        fCounter.init()
         first = false
+        timer.start()
     }
 
     fun openMined() {
