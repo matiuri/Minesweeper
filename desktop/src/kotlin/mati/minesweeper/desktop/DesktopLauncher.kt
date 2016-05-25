@@ -1,3 +1,5 @@
+@file:JvmName("DesktopLauncher")
+
 package mati.minesweeper.desktop
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
