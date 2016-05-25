@@ -260,7 +260,7 @@ class GameS(game: Game) : Screen(game) {
         Cell.Static.update(delta)
 
         if (CBLD.pressed || CBLL.pressed || CBLR.pressed || CBLU.pressed) {
-            val amount: Float = 2.5f * cam.zoom
+            val amount: Float = 2.5f * cam.zoom * delta * 100f
             if (CBLD.pressed) cam.position.y -= amount
             else if (CBLL.pressed) cam.position.x -= amount
             else if (CBLR.pressed) cam.position.x += amount
