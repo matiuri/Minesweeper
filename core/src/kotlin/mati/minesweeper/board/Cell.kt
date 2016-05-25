@@ -1,12 +1,21 @@
 package mati.minesweeper.board
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle
 import mati.advancedgdx.AdvancedGame.Static.log
 import mati.advancedgdx.graphics.Animation
+import mati.advancedgdx.utils.addListener1
+import mati.advancedgdx.utils.createButton
+import mati.advancedgdx.utils.createLabel
+import mati.advancedgdx.utils.createNPD
 import mati.minesweeper.Game
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
@@ -67,9 +76,18 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
                     batch.draw(open, getX(), getY(), width, height)
                     batch.color = Color.WHITE
                 }
-                if (mined)
+                if (mined) {
+                    if (flagged) {
+                        batch.color = Color.BLUE
+                        batch.draw(open, getX(), getY(), width, height)
+                        batch.color = Color.WHITE
+                    } else {
+                        batch.color = Color.RED
+                        batch.draw(open, getX(), getY(), width, height)
+                        batch.color = Color.WHITE
+                    }
                     batch.draw(mine.get(), getX(), getY(), width, height)
-                else if (aroundMines != 0) batch.draw(nums[aroundMines - 1], getX(), getY(), width, height)
+                } else if (aroundMines != 0) batch.draw(nums[aroundMines - 1], getX(), getY(), width, height)
             }
         }
     }
@@ -92,12 +110,72 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
             board.timer.stop()
             log.d("${this.javaClass.simpleName}", "Game Over. ${board.timer.label.text}")
             board.openMined()
+            Gdx.input.inputProcessor = board.gameS.gui
+            Gdx.graphics.setCursor(board.game.cursors[0])
+            val dialog: Dialog = Dialog("", WindowStyle(board.game.astManager["GameOverF", BitmapFont::class],
+                    Color.WHITE, createNPD(board.game.astManager["Dialog", Texture::class], 5)))
+            dialog.color = Color.RED
+
+
+            dialog.text(createLabel("Game Over!", board.game.astManager["GameOverF", BitmapFont::class]))
+
+            val retry: TextButton = createButton("Try Again", board.game.astManager["GeneralW", BitmapFont::class],
+                    createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
+                    createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
+            retry.color = Color.GREEN
+            retry.addListener1 { e, a ->
+                board.game.scrManager.change("Game")
+                dialog.hide()
+            }
+            dialog.button(retry)
+
+            val menu: TextButton = createButton("Main Menu", board.game.astManager["GeneralW", BitmapFont::class],
+                    createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
+                    createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
+            menu.color = Color.RED
+            menu.addListener1 { e, a ->
+                board.game.scrManager.change("Title")
+                dialog.hide()
+            }
+            dialog.button(menu)
+
+            dialog.show(board.gameS.gui)
         } else {
             board.opened++
             if (board.opened == board.totalClean) {
                 // WIN!
                 board.timer.stop()
                 log.d("${this.javaClass.simpleName}", "WIN! ${board.timer.label.text}")
+                Gdx.input.inputProcessor = board.gameS.gui
+                Gdx.graphics.setCursor(board.game.cursors[0])
+                val dialog: Dialog = Dialog("", WindowStyle(board.game.astManager["WinF", BitmapFont::class],
+                        Color.WHITE, createNPD(board.game.astManager["Dialog", Texture::class], 5)))
+                dialog.color = Color.GREEN
+
+                dialog.text(createLabel("Congratulations!", board.game.astManager["WinF", BitmapFont::class]))
+
+                val replay: TextButton = createButton("Play Again",
+                        board.game.astManager["GeneralW", BitmapFont::class],
+                        createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
+                        createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
+                replay.color = Color.GREEN
+                replay.addListener1 { e, a ->
+                    board.game.scrManager.change("Game")
+                    dialog.hide()
+                }
+                dialog.button(replay)
+
+                val menu: TextButton = createButton("Main Menu", board.game.astManager["GeneralW", BitmapFont::class],
+                        createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
+                        createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
+                menu.color = Color.RED
+                menu.addListener1 { e, a ->
+                    board.game.scrManager.change("Title")
+                    dialog.hide()
+                }
+                dialog.button(menu)
+
+                dialog.show(board.gameS.gui)
             } else openAround()
         }
     }

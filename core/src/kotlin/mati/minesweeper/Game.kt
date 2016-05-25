@@ -56,6 +56,18 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     it.borderColor = Color.WHITE
                     it.borderWidth = 0.5f
                 })
+                .queue("GameOverF", "GameOverFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuBGen"]) {
+                    it.size = 32
+                    it.color = Color.RED
+                    it.borderColor = Color.BLACK
+                    it.borderWidth = 1f
+                })
+                .queue("WinF", "WinFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuBGen"]) {
+                    it.size = 32
+                    it.color = Color.GREEN
+                    it.borderColor = Color.WHITE
+                    it.borderWidth = 1f
+                })
                 .queue("ButtonUp", "GUI/ButtonUp.png", Texture::class)
                 .queue("ButtonDown", "GUI/ButtonDown.png", Texture::class)
                 .queue("ButtonLocked", "GUI/ButtonLocked.png", Texture::class)
@@ -82,6 +94,7 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                 .queue("CamPD", "GUI/CamPlusDown.png", Texture::class)
                 .queue("CamMU", "GUI/CamMinusUp.png", Texture::class)
                 .queue("CamMD", "GUI/CamMinusDown.png", Texture::class)
+                .queue("Dialog", "GUI/Dialog.png", Texture::class)
                 .load {
                     if (isDesktop()) {
                         cursors = arrayOf(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0),
@@ -90,8 +103,8 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     }
                     Cell.init(this)
                     scrManager.loadAll()
-                    //FIXME: scrManager.change("Title")
-                    scrManager.change("Game")
+                    scrManager.change("Title")
+                    //scrManager.change("Game")
                 }
     }
 

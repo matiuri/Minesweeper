@@ -20,6 +20,7 @@ import mati.advancedgdx.screens.Screen
 import mati.advancedgdx.utils.addListener1
 import mati.advancedgdx.utils.createButton
 import mati.advancedgdx.utils.createNPD
+import mati.advancedgdx.utils.isDesktop
 import mati.minesweeper.Game
 import mati.minesweeper.board.Board
 import mati.minesweeper.board.Cell
@@ -48,8 +49,11 @@ class GameS(game: Game) : Screen(game) {
     }
 
     override fun show() {
+        if (isDesktop())
+            Gdx.graphics.setCursor((game as Game).cursors[1])
+
         timer.reset()
-        val board = Board(timer)
+        val board = Board(this, game as Game, timer)
         stage.addActor(board)
 
         val guiTop: Image = Image(createNPD(game.astManager["GUIt", Texture::class], 0, 0, 24, 24))
@@ -75,12 +79,25 @@ class GameS(game: Game) : Screen(game) {
         gui.addActor(timer.label)
         timer.label.setPosition(26f, 4f)
 
-        val fCounter: FlagCounter = FlagCounter(game as Game, board, guiBottom.width - 24f)
+        val fCounter: FlagCounter = FlagCounter(game, board, guiBottom.width - 24f)
         board.fCounter = fCounter
         fCounter.label.setPosition(guiBottom.width - 24f - fCounter.label.width, 4f)
         fCounter.label.setAlignment(Align.right)
         gui.addActor(fCounter.label)
 
+        camButtons()
+
+        //gui.setDebugAll(true)
+
+        cam.position.x = board.wh.toFloat() * board.size / 2f
+        cam.position.y = board.wh.toFloat() * board.size / 2f
+        cam.zoom = camZ
+        cam.update()
+
+        Gdx.input.inputProcessor = InputMultiplexer(gui, stage)
+    }
+
+    private fun camButtons() {
         val table: Table = Table()
         gui.addActor(table)
         table.setBounds(24f, gui.height - 64, gui.width - 48, 64f)
@@ -131,15 +148,6 @@ class GameS(game: Game) : Screen(game) {
             cam.update()
         }
         table.add(zDn).pad(5f)
-
-        //gui.setDebugAll(true)
-
-        cam.position.x = board.wh.toFloat() * board.size / 2f
-        cam.position.y = board.wh.toFloat() * board.size / 2f
-        cam.zoom = camZ
-        cam.update()
-
-        Gdx.input.inputProcessor = InputMultiplexer(gui, stage)
     }
 
     override fun render(delta: Float) {
@@ -147,10 +155,11 @@ class GameS(game: Game) : Screen(game) {
         Cell.Static.update(delta)
 
         if (CBLD.pressed || CBLL.pressed || CBLR.pressed || CBLU.pressed) {
-            if (CBLD.pressed) cam.position.y -= 1.5f
-            else if (CBLL.pressed) cam.position.x -= 1.5f
-            else if (CBLR.pressed) cam.position.x += 1.5f
-            else if (CBLU.pressed) cam.position.y += 1.5f
+            val amount: Float = 2.5f * cam.zoom
+            if (CBLD.pressed) cam.position.y -= amount
+            else if (CBLL.pressed) cam.position.x -= amount
+            else if (CBLR.pressed) cam.position.x += amount
+            else if (CBLU.pressed) cam.position.y += amount
             cam.update()
         }
 

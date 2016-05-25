@@ -3,11 +3,13 @@ package mati.minesweeper.board
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Group
 import mati.advancedgdx.utils.isDesktop
+import mati.minesweeper.Game
 import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
+import mati.minesweeper.screens.GameS
 import kotlin.properties.Delegates
 
-class Board(val timer: Timer) : Group() {
+class Board(val gameS: GameS, val game: Game, val timer: Timer) : Group() {
     var cells: Array<Array<Cell>> by Delegates.notNull<Array<Array<Cell>>>()
     var size: Int = if (isDesktop()) 64 else 32
     var wh: Int = 50
@@ -56,7 +58,6 @@ class Board(val timer: Timer) : Group() {
             for (c in c1) {
                 if (c.mined) {
                     c.opened = true
-                    c.flagged = false
                 }
             }
         }

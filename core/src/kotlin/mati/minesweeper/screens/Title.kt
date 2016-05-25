@@ -45,8 +45,6 @@ class Title(game: Game) : Screen(game) {
         table.add(exit).pad(5f).fill()
         play.addListener1 { event, actor ->
             game.scrManager.change("Game")
-            if (isDesktop())
-                Gdx.graphics.setCursor((game as Game).cursors[1])
         }
         exit.addListener1 { e, a ->
             Gdx.app.exit()
