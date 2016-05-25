@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Group
 import mati.advancedgdx.utils.isDesktop
 import mati.minesweeper.Game
+import mati.minesweeper.board.Board.AndroidMode.*
 import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
 import mati.minesweeper.screens.GameS
@@ -17,7 +18,16 @@ class Board(val gameS: GameS, val game: Game, val timer: Timer) : Group() {
     var first: Boolean = true
     var totalClean: Int = 0
     var opened: Int = 0
+    var mode: AndroidMode = NULL
     var fCounter: FlagCounter by Delegates.notNull<FlagCounter>()
+
+    enum class AndroidMode {
+        NULL, OPEN, FLAG
+    }
+
+    fun isOpenMode(): Boolean = mode == OPEN
+
+    fun isFlagMode(): Boolean = mode == FLAG
 
     init {
         cells = Array(wh) { x ->

@@ -2,7 +2,6 @@ package mati.minesweeper
 
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
@@ -22,6 +21,7 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     override fun create() {
         super.create()
         init(this)
+        Gdx.input.isCatchBackKey = true
         Gdx.app.logLevel = LOG_DEBUG
         prepare()
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
@@ -68,6 +68,10 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     it.borderColor = Color.WHITE
                     it.borderWidth = 1f
                 })
+                .queue("AndroidF", "AndroidFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                    it.size = 16
+                    it.color = Color.WHITE
+                })
                 .queue("ButtonUp", "GUI/ButtonUp.png", Texture::class)
                 .queue("ButtonDown", "GUI/ButtonDown.png", Texture::class)
                 .queue("ButtonLocked", "GUI/ButtonLocked.png", Texture::class)
@@ -82,6 +86,7 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                 .queue("CursorRed", "GUI/CursorRed.png", Pixmap::class)
                 .queue("GUIb", "GUI/GUIb.png", Texture::class)
                 .queue("GUIt", "GUI/GUIt.png", Texture::class)
+                .queue("GUIl", "GUI/GUIl.png", Texture::class)
                 .queue("CamDD", "GUI/CamDownDown.png", Texture::class)
                 .queue("CamDU", "GUI/CamDownUp.png", Texture::class)
                 .queue("CamLD", "GUI/CamLeftDown.png", Texture::class)

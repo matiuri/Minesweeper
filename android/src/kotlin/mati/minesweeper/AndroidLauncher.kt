@@ -1,15 +1,13 @@
 package mati.minesweeper
 
 import android.os.Bundle
-
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import mati.minesweeper.input.CellInputListener
 
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val config = AndroidApplicationConfiguration()
-        initialize(Game(CellInputListener::class), config)
+        initialize(Game(CellInputListenerA::class), config)
     }
 }

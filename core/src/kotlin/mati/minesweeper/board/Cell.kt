@@ -12,10 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle
 import mati.advancedgdx.AdvancedGame.Static.log
 import mati.advancedgdx.graphics.Animation
-import mati.advancedgdx.utils.addListener1
-import mati.advancedgdx.utils.createButton
-import mati.advancedgdx.utils.createLabel
-import mati.advancedgdx.utils.createNPD
+import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
@@ -111,7 +108,8 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
             log.d("${this.javaClass.simpleName}", "Game Over. ${board.timer.label.text}")
             board.openMined()
             Gdx.input.inputProcessor = board.gameS.gui
-            Gdx.graphics.setCursor(board.game.cursors[0])
+            if (isDesktop())
+                Gdx.graphics.setCursor(board.game.cursors[0])
             val dialog: Dialog = Dialog("", WindowStyle(board.game.astManager["GameOverF", BitmapFont::class],
                     Color.WHITE, createNPD(board.game.astManager["Dialog", Texture::class], 5)))
             dialog.color = Color.RED
@@ -147,7 +145,8 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
                 board.timer.stop()
                 log.d("${this.javaClass.simpleName}", "WIN! ${board.timer.label.text}")
                 Gdx.input.inputProcessor = board.gameS.gui
-                Gdx.graphics.setCursor(board.game.cursors[0])
+                if (isDesktop())
+                    Gdx.graphics.setCursor(board.game.cursors[0])
                 val dialog: Dialog = Dialog("", WindowStyle(board.game.astManager["WinF", BitmapFont::class],
                         Color.WHITE, createNPD(board.game.astManager["Dialog", Texture::class], 5)))
                 dialog.color = Color.GREEN

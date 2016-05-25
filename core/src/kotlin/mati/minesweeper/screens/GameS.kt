@@ -10,21 +10,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import mati.advancedgdx.screens.Screen
-import mati.advancedgdx.utils.addListener1
-import mati.advancedgdx.utils.createButton
-import mati.advancedgdx.utils.createNPD
-import mati.advancedgdx.utils.isDesktop
+import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
 import mati.minesweeper.board.Board
+import mati.minesweeper.board.Board.AndroidMode.*
 import mati.minesweeper.board.Cell
 import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
@@ -57,6 +52,60 @@ class GameS(game: Game) : Screen(game) {
         timer.reset()
         val board = Board(this, game as Game, timer)
         stage.addActor(board)
+
+        if (isAndroid()) {
+            val guiLeft: Image = Image(createNPD(game.astManager["GUIl", Texture::class], 24, 24, 0, 0))
+            guiLeft.setBounds(0f, 0f, 64f, gui.height)
+            guiLeft.color = Color.GOLD
+            gui.addActor(guiLeft)
+            guiLeft.addListener(object : InputListener() {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    return true
+                }
+            })
+
+            val table: Table = Table()
+            gui.addActor(table)
+            table.setBounds(0f, 32f + 24f, 64f, gui.height - 32f - 64f - 2f * 24f)
+            //table.debug = true
+
+            val buttonNull: TextButton = createButton("Null", game.astManager["AndroidF", BitmapFont::class],
+                    createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                    createNPD(game.astManager["ButtonDown", Texture::class], 8),
+                    createNPD(game.astManager["ButtonDown", Texture::class], 8))
+            buttonNull.color = Color.GRAY
+            buttonNull.addListener2 { e, a ->
+                board.mode = NULL
+            }
+            table.add(buttonNull).pad(5f)
+            table.row()
+
+            val buttonOpen: TextButton = createButton("Open", game.astManager["AndroidF", BitmapFont::class],
+                    createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                    createNPD(game.astManager["ButtonDown", Texture::class], 8),
+                    createNPD(game.astManager["ButtonDown", Texture::class], 8))
+            buttonOpen.color = Color.RED
+            buttonOpen.addListener2 { e, a ->
+                board.mode = OPEN
+            }
+            table.add(buttonOpen).pad(5f)
+            table.row()
+
+            val buttonFlag: TextButton = createButton("Flag", game.astManager["AndroidF", BitmapFont::class],
+                    createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                    createNPD(game.astManager["ButtonDown", Texture::class], 8),
+                    createNPD(game.astManager["ButtonDown", Texture::class], 8))
+            buttonFlag.color = Color.BLUE
+            buttonFlag.addListener2 { e, a ->
+                board.mode = FLAG
+            }
+            table.add(buttonFlag).pad(5f)
+
+            val group: ButtonGroup<TextButton> = ButtonGroup(buttonNull, buttonOpen, buttonFlag)
+            group.setMinCheckCount(1)
+            group.setMaxCheckCount(1)
+            group.setChecked("Null")
+        }
 
         val guiTop: Image = Image(createNPD(game.astManager["GUIt", Texture::class], 0, 0, 24, 24))
         guiTop.setBounds(0f, gui.height - 64, gui.width, 64f)
