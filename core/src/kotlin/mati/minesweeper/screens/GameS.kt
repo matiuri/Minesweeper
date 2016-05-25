@@ -183,14 +183,23 @@ class GameS(game: Game) : Screen(game) {
         val exit: TextButton = createButton("Leave Game", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
-        exit.color = Color.RED
+        exit.color = Color(0.5f, 0f, 0f, 1f)
+        var secure: Boolean = false
         exit.addListener1 { e, a ->
-            game.scrManager.change("Title")
-            dialog.hide()
+            if (!secure) {
+                secure = true
+                exit.color = Color.RED
+            } else {
+                secure = false
+                game.scrManager.change("Title")
+                dialog.hide()
+            }
         }
         dialog.button(exit)
 
         pause.addListener1 { e, a ->
+            exit.color = Color(0.5f, 0f, 0f, 1f)
+            secure = false
             if (isDesktop())
                 Gdx.graphics.setCursor((game as Game).cursors[0])
             timer.stop()
