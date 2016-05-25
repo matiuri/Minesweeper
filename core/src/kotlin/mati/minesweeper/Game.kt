@@ -94,7 +94,11 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                 .queue("CamPD", "GUI/CamPlusDown.png", Texture::class)
                 .queue("CamMU", "GUI/CamMinusUp.png", Texture::class)
                 .queue("CamMD", "GUI/CamMinusDown.png", Texture::class)
+                .queue("CamCU", "GUI/CamCenterUp.png", Texture::class)
+                .queue("CamCD", "GUI/CamCenterDown.png", Texture::class)
                 .queue("Dialog", "GUI/Dialog.png", Texture::class)
+                .queue("PauseUp", "GUI/PauseUp.png", Texture::class)
+                .queue("PauseDown", "GUI/PauseDown.png", Texture::class)
                 .load {
                     if (isDesktop()) {
                         cursors = arrayOf(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0),
@@ -111,8 +115,5 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     override fun render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         super.render()
-
-        //FIXME: Remove this
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) Gdx.app.exit()
     }
 }

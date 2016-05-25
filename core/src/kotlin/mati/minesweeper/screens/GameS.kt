@@ -10,9 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
@@ -85,7 +87,7 @@ class GameS(game: Game) : Screen(game) {
         fCounter.label.setAlignment(Align.right)
         gui.addActor(fCounter.label)
 
-        camButtons()
+        guiButtons(board)
 
         //gui.setDebugAll(true)
 
@@ -97,11 +99,56 @@ class GameS(game: Game) : Screen(game) {
         Gdx.input.inputProcessor = InputMultiplexer(gui, stage)
     }
 
-    private fun camButtons() {
+    private fun guiButtons(board: Board) {
         val table: Table = Table()
         gui.addActor(table)
         table.setBounds(24f, gui.height - 64, gui.width - 48, 64f)
         //table.debug = true
+
+        val image: Image = Image(createNPD(game.astManager["Dialog", Texture::class], 5))
+        image.setBounds(0f, 0f, gui.width, gui.height)
+        image.color = Color.RED
+
+        val pause: TextButton = createButton("", game.astManager["GeneralW", BitmapFont::class],
+                TextureRegionDrawable(TextureRegion(game.astManager["PauseUp", Texture::class])),
+                TextureRegionDrawable(TextureRegion(game.astManager["PauseDown", Texture::class])))
+
+        val dialog: Dialog = Dialog("", WindowStyle(game.astManager["GeneralW", BitmapFont::class],
+                Color.WHITE, createNPD(game.astManager["Dialog", Texture::class], 5)))
+        dialog.color = Color.ORANGE
+
+        val resume: TextButton = createButton("Continue", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        resume.color = Color.GREEN
+        resume.addListener1 { e, a ->
+            if (isDesktop())
+                Gdx.graphics.setCursor((game as Game).cursors[1])
+            if (!board.first)
+                timer.start()
+            dialog.hide()
+            image.remove()
+        }
+        dialog.button(resume)
+
+        val exit: TextButton = createButton("Leave Game", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        exit.color = Color.RED
+        exit.addListener1 { e, a ->
+            game.scrManager.change("Title")
+            dialog.hide()
+        }
+        dialog.button(exit)
+
+        pause.addListener1 { e, a ->
+            if (isDesktop())
+                Gdx.graphics.setCursor((game as Game).cursors[0])
+            timer.stop()
+            gui.addActor(image)
+            dialog.show(gui)
+        }
+        table.add(pause).pad(5f)
 
         val left: TextButton = createButton("", game.astManager["GeneralW", BitmapFont::class],
                 TextureRegionDrawable(TextureRegion(game.astManager["CamLU", Texture::class])),
@@ -148,6 +195,15 @@ class GameS(game: Game) : Screen(game) {
             cam.update()
         }
         table.add(zDn).pad(5f)
+
+        val zCn: TextButton = createButton("", game.astManager["GeneralW", BitmapFont::class],
+                TextureRegionDrawable(TextureRegion(game.astManager["CamCU", Texture::class])),
+                TextureRegionDrawable(TextureRegion(game.astManager["CamCD", Texture::class])))
+        zCn.addListener1 { e, a ->
+            cam.zoom = 1f
+            cam.update()
+        }
+        table.add(zCn).pad(5f)
     }
 
     override fun render(delta: Float) {

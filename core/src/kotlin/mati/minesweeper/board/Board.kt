@@ -50,7 +50,7 @@ class Board(val gameS: GameS, val game: Game, val timer: Timer) : Group() {
         cell.open()
         fCounter.init()
         first = false
-        timer.start()
+        timer.start(true)
     }
 
     fun openMined() {
