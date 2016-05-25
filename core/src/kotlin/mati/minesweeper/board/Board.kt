@@ -10,7 +10,7 @@ import kotlin.properties.Delegates
 class Board(val timer: Timer) : Group() {
     var cells: Array<Array<Cell>> by Delegates.notNull<Array<Array<Cell>>>()
     var size: Int = if (isDesktop()) 64 else 32
-    var wh: Int = 10
+    var wh: Int = 50
     var mines: Int = 0
     var first: Boolean = true
     var totalClean: Int = 0

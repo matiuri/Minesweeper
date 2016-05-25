@@ -11,13 +11,12 @@ import mati.advancedgdx.AdvancedGame
 import mati.advancedgdx.assets.FontLoader.FontLoaderParameter
 import mati.advancedgdx.utils.isDesktop
 import mati.minesweeper.board.Cell
-import mati.minesweeper.input.CellInputListener
 import mati.minesweeper.screens.GameS
 import mati.minesweeper.screens.Title
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
-class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) : AdvancedGame() {
+class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     var cursors: Array<Cursor> by Delegates.notNull<Array<Cursor>>()
 
     override fun create() {
@@ -69,8 +68,20 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
                 .queue("Flag", "game/Flag.png", Texture::class)
                 .queue("CursorBlue", "GUI/CursorBlue.png", Pixmap::class)
                 .queue("CursorRed", "GUI/CursorRed.png", Pixmap::class)
-                .queue("GUI", "GUI/GUI.png", Texture::class)
-                .queue("GUIr", "GUI/GUIr.png", Texture::class)
+                .queue("GUIb", "GUI/GUIb.png", Texture::class)
+                .queue("GUIt", "GUI/GUIt.png", Texture::class)
+                .queue("CamDD", "GUI/CamDownDown.png", Texture::class)
+                .queue("CamDU", "GUI/CamDownUp.png", Texture::class)
+                .queue("CamLD", "GUI/CamLeftDown.png", Texture::class)
+                .queue("CamLU", "GUI/CamLeftUp.png", Texture::class)
+                .queue("CamRD", "GUI/CamRightDown.png", Texture::class)
+                .queue("CamRU", "GUI/CamRightUp.png", Texture::class)
+                .queue("CamUD", "GUI/CamUpDown.png", Texture::class)
+                .queue("CamUU", "GUI/CamUpUp.png", Texture::class)
+                .queue("CamPU", "GUI/CamPlusUp.png", Texture::class)
+                .queue("CamPD", "GUI/CamPlusDown.png", Texture::class)
+                .queue("CamMU", "GUI/CamMinusUp.png", Texture::class)
+                .queue("CamMD", "GUI/CamMinusDown.png", Texture::class)
                 .load {
                     if (isDesktop()) {
                         cursors = arrayOf(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0),
@@ -79,7 +90,8 @@ class Game(val cellInput: KClass<out InputListener> = CellInputListener::class) 
                     }
                     Cell.init(this)
                     scrManager.loadAll()
-                    scrManager.change("Title")
+                    //FIXME: scrManager.change("Title")
+                    scrManager.change("Game")
                 }
     }
 
