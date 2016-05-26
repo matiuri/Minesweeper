@@ -29,17 +29,32 @@ class Title(game: Game) : Screen(game) {
         stage.addActor(table)
         table.setFillParent(true)
         table.pad(20f)
-        table.debug = false
+
         title = createLabel("Minesweeper", game.astManager["Title", BitmapFont::class])
         table.add(title).colspan(3).pad(10f)
         table.row()
 
+        createPlayButton()
+        createContinueButton()
+        createExitButton()
+
+        Gdx.input.inputProcessor = stage
+    }
+
+    private fun createPlayButton() {
         val play: TextButton = createButton("New Game", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
         play.color = Color.BLUE
         table.add(play).pad(5f).fill()
 
+        play.addListener1 { event, actor ->
+            (game.scrManager["Game"] as GameS).newGame = true
+            game.scrManager.change("Game")
+        }
+    }
+
+    private fun createContinueButton() {
         val cont: TextButton = if (!(game.ioManager.exists("board") && game.ioManager.exists("timer")))
             createButton("Load Game", game.astManager["GeneralB", BitmapFont::class],
                     createNPD(game.astManager["ButtonLocked", Texture::class], 8),
@@ -48,32 +63,28 @@ class Title(game: Game) : Screen(game) {
             createButton("Load Game", game.astManager["GeneralW", BitmapFont::class],
                     createNPD(game.astManager["ButtonUp", Texture::class], 8),
                     createNPD(game.astManager["ButtonDown", Texture::class], 8))
+
         if (!(game.ioManager.exists("board") && game.ioManager.exists("timer")))
             cont.color = Color.DARK_GRAY
-        else cont.color = Color.ORANGE
+        else {
+            cont.color = Color.ORANGE
+            cont.addListener1 { event, actor ->
+                (game.scrManager["Game"] as GameS).newGame = false
+                game.scrManager.change("Game")
+            }
+        }
         table.add(cont).pad(5f).fill()
+    }
 
+    private fun createExitButton() {
         val exit: TextButton = createButton("Exit", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
         exit.color = Color.RED
         table.add(exit).pad(5f).fill()
-
-        play.addListener1 { event, actor ->
-            (game.scrManager["Game"] as GameS).newGame = true
-            game.scrManager.change("Game")
-        }
-
-        if (game.ioManager.exists("board") && game.ioManager.exists("timer"))
-            cont.addListener1 { event, actor ->
-                (game.scrManager["Game"] as GameS).newGame = false
-                game.scrManager.change("Game")
-            }
-
         exit.addListener1 { e, a ->
             Gdx.app.exit()
         }
-        Gdx.input.inputProcessor = stage
     }
 
     override fun render(delta: Float) {

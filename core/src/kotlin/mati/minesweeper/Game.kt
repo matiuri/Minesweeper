@@ -122,7 +122,6 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     Cell.init(this)
                     scrManager.loadAll()
                     scrManager.change("Title")
-                    //scrManager.change("Game")
                 }
     }
 

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import mati.advancedgdx.AdvancedGame
 import mati.advancedgdx.screens.Screen
 import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
@@ -63,8 +64,6 @@ class GameS(game: Game) : Screen(game) {
         else if (!board.first)
             timer.start()
         board.timer = timer
-        board.game = game as Game
-        board.gameS = this
         stage.addActor(board)
 
         if (isAndroid()) {
@@ -81,7 +80,6 @@ class GameS(game: Game) : Screen(game) {
             val table: Table = Table()
             gui.addActor(table)
             table.setBounds(0f, 32f + 24f, 64f, gui.height - 32f - 64f - 2f * 24f)
-            //table.debug = true
 
             val buttonNull: TextButton = createButton("Null", game.astManager["AndroidF", BitmapFont::class],
                     createNPD(game.astManager["ButtonUp", Texture::class], 8),
@@ -144,7 +142,7 @@ class GameS(game: Game) : Screen(game) {
         gui.addActor(timer.label)
         timer.label.setPosition(26f, 4f)
 
-        val fCounter: FlagCounter = FlagCounter(game, board, guiBottom.width - 24f)
+        val fCounter: FlagCounter = FlagCounter(game as Game, board, guiBottom.width - 24f)
         if (!newGame) fCounter.init(board.flags)
         board.fCounter = fCounter
         fCounter.label.setPosition(guiBottom.width - 24f - fCounter.label.width, 4f)
@@ -152,8 +150,6 @@ class GameS(game: Game) : Screen(game) {
         gui.addActor(fCounter.label)
 
         guiButtons(board)
-
-        //gui.setDebugAll(true)
 
         cam.position.x = board.wh.toFloat() * board.size / 2f
         cam.position.y = board.wh.toFloat() * board.size / 2f
@@ -167,7 +163,6 @@ class GameS(game: Game) : Screen(game) {
         val table: Table = Table()
         gui.addActor(table)
         table.setBounds(24f, gui.height - 64, gui.width - 48, 64f)
-        //table.debug = true
 
         val image: Image = Image(createNPD(game.astManager["Dialog", Texture::class], 5))
         image.setBounds(0f, 0f, gui.width, gui.height)
@@ -216,7 +211,7 @@ class GameS(game: Game) : Screen(game) {
                 secure = true
                 exit.color = Color.RED
             } else {
-                board.game.ioManager.delete("board").delete("timer")
+                game.ioManager.delete("board").delete("timer")
                 secure = false
                 game.scrManager.change("Title")
                 dialog.hide()
@@ -309,6 +304,82 @@ class GameS(game: Game) : Screen(game) {
 
         gui.act(delta)
         gui.draw()
+    }
+
+    fun gameOver() {
+        timer.stop()
+        AdvancedGame.log.d("${this.javaClass.simpleName}", "Game Over. ${timer.label.text}")
+        Gdx.input.inputProcessor = gui
+        if (isDesktop())
+            Gdx.graphics.setCursor(Game.game.cursors[0])
+        val dialog: Dialog = Dialog("", Window.WindowStyle(Game.game.astManager["GameOverF", BitmapFont::class],
+                Color.WHITE, createNPD(Game.game.astManager["Dialog", Texture::class], 5)))
+        dialog.color = Color.RED
+
+
+        dialog.text(createLabel("Game Over!", Game.game.astManager["GameOverF", BitmapFont::class]))
+
+        val retry: TextButton = createButton("Try Again", Game.game.astManager["GeneralW", BitmapFont::class],
+                createNPD(Game.game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(Game.game.astManager["ButtonDown", Texture::class], 8))
+        retry.color = Color.GREEN
+        retry.addListener1 { e, a ->
+            (Game.game.scrManager["Game"] as GameS).newGame = true
+            Game.game.scrManager.change("Game")
+            dialog.hide()
+        }
+        dialog.button(retry)
+
+        val menu: TextButton = createButton("Main Menu", Game.game.astManager["GeneralW", BitmapFont::class],
+                createNPD(Game.game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(Game.game.astManager["ButtonDown", Texture::class], 8))
+        menu.color = Color.RED
+        menu.addListener1 { e, a ->
+            Game.game.scrManager.change("Title")
+            dialog.hide()
+        }
+        dialog.button(menu)
+
+        dialog.show(gui)
+        Game.game.ioManager.delete("board").delete("timer")
+    }
+
+    fun win() {
+        timer.stop()
+        AdvancedGame.log.d("${this.javaClass.simpleName}", "WIN! ${timer.label.text}")
+        Gdx.input.inputProcessor = gui
+        if (isDesktop())
+            Gdx.graphics.setCursor(Game.game.cursors[0])
+        val dialog: Dialog = Dialog("", Window.WindowStyle(Game.game.astManager["WinF", BitmapFont::class],
+                Color.WHITE, createNPD(Game.game.astManager["Dialog", Texture::class], 5)))
+        dialog.color = Color.GREEN
+
+        dialog.text(createLabel("Congratulations!", Game.game.astManager["WinF", BitmapFont::class]))
+
+        val replay: TextButton = createButton("Play Again",
+                Game.game.astManager["GeneralW", BitmapFont::class],
+                createNPD(Game.game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(Game.game.astManager["ButtonDown", Texture::class], 8))
+        replay.color = Color.GREEN
+        replay.addListener1 { e, a ->
+            (Game.game.scrManager["Game"] as GameS).newGame = true
+            Game.game.scrManager.change("Game")
+            dialog.hide()
+        }
+        dialog.button(replay)
+
+        val menu: TextButton = createButton("Main Menu", Game.game.astManager["GeneralW", BitmapFont::class],
+                createNPD(Game.game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(Game.game.astManager["ButtonDown", Texture::class], 8))
+        menu.color = Color.RED
+        menu.addListener1 { e, a ->
+            Game.game.scrManager.change("Title")
+            dialog.hide()
+        }
+        dialog.button(menu)
+
+        dialog.show(gui)
+        Game.game.ioManager.delete("board").delete("timer")
     }
 
     override fun hide() {
