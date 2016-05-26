@@ -16,9 +16,18 @@ import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
+    companion object Static {
+        var game: Game by Delegates.notNull<Game>()
+
+        fun init(game: Game) {
+            this.game = game
+        }
+    }
+
     var cursors: Array<Cursor> by Delegates.notNull<Array<Cursor>>()
 
     override fun create() {
+        Static.init(this)
         super.create()
         init(this)
         Gdx.input.isCatchBackKey = true

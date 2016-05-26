@@ -14,6 +14,7 @@ import mati.advancedgdx.AdvancedGame.Static.log
 import mati.advancedgdx.graphics.Animation
 import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
+import mati.minesweeper.screens.GameS
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
@@ -122,6 +123,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
                     createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
             retry.color = Color.GREEN
             retry.addListener1 { e, a ->
+                (board.game.scrManager["Game"] as GameS).newGame = true
                 board.game.scrManager.change("Game")
                 dialog.hide()
             }
@@ -138,6 +140,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
             dialog.button(menu)
 
             dialog.show(board.gameS.gui)
+            board.game.ioManager.delete("board").delete("timer")
         } else {
             board.opened++
             if (board.opened == board.totalClean) {
@@ -159,6 +162,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
                         createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
                 replay.color = Color.GREEN
                 replay.addListener1 { e, a ->
+                    (board.game.scrManager["Game"] as GameS).newGame = true
                     board.game.scrManager.change("Game")
                     dialog.hide()
                 }
@@ -175,6 +179,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
                 dialog.button(menu)
 
                 dialog.show(board.gameS.gui)
+                board.game.ioManager.delete("board").delete("timer")
             } else openAround()
         }
     }

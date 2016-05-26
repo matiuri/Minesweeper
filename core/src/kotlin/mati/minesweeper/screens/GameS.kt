@@ -23,7 +23,9 @@ import mati.minesweeper.board.Board.AndroidMode.*
 import mati.minesweeper.board.Cell
 import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
+import mati.minesweeper.gui.Timer.TimerSerializer
 import mati.minesweeper.input.CamButtonListener
+import mati.minesweeper.io.BoardSerializer
 import kotlin.properties.Delegates
 
 class GameS(game: Game) : Screen(game) {
@@ -35,6 +37,7 @@ class GameS(game: Game) : Screen(game) {
     var CBLU: CamButtonListener by Delegates.notNull<CamButtonListener>()
     var CBLD: CamButtonListener by Delegates.notNull<CamButtonListener>()
     var CBLR: CamButtonListener by Delegates.notNull<CamButtonListener>()
+    var newGame: Boolean = false
     private var camZ: Float = 0f
 
     override fun load() {
@@ -49,8 +52,19 @@ class GameS(game: Game) : Screen(game) {
         if (isDesktop())
             Gdx.graphics.setCursor((game as Game).cursors[1])
 
-        timer.reset()
-        val board = Board(this, game as Game, timer)
+        if (newGame)
+            timer.reset()
+        else
+            timer = game.ioManager.load("timer", TimerSerializer::class)
+        val board: Board = if (newGame) Board()
+        else game.ioManager.load("board", BoardSerializer::class)
+        if (newGame)
+            board.init()
+        else if (!board.first)
+            timer.start()
+        board.timer = timer
+        board.game = game as Game
+        board.gameS = this
         stage.addActor(board)
 
         if (isAndroid()) {
@@ -131,6 +145,7 @@ class GameS(game: Game) : Screen(game) {
         timer.label.setPosition(26f, 4f)
 
         val fCounter: FlagCounter = FlagCounter(game, board, guiBottom.width - 24f)
+        if (!newGame) fCounter.init(board.flags)
         board.fCounter = fCounter
         fCounter.label.setPosition(guiBottom.width - 24f - fCounter.label.width, 4f)
         fCounter.label.setAlignment(Align.right)
@@ -180,6 +195,17 @@ class GameS(game: Game) : Screen(game) {
         }
         dialog.button(resume)
 
+        val save: TextButton = createButton("Save and Exit", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        save.color = Color.YELLOW
+        save.addListener1 { e, a ->
+            game.ioManager.save("board", board, BoardSerializer())
+            game.ioManager.save("timer", timer, TimerSerializer())
+            game.scrManager.change("Title")
+        }
+        dialog.button(save)
+
         val exit: TextButton = createButton("Leave Game", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
@@ -190,6 +216,7 @@ class GameS(game: Game) : Screen(game) {
                 secure = true
                 exit.color = Color.RED
             } else {
+                board.game.ioManager.delete("board").delete("timer")
                 secure = false
                 game.scrManager.change("Title")
                 dialog.hide()

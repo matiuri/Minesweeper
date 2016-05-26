@@ -10,7 +10,7 @@ import mati.minesweeper.gui.Timer
 import mati.minesweeper.screens.GameS
 import kotlin.properties.Delegates
 
-class Board(val gameS: GameS, val game: Game, val timer: Timer) : Group() {
+class Board() : Group() {
     var cells: Array<Array<Cell>> by Delegates.notNull<Array<Array<Cell>>>()
     var size: Int = if (isDesktop()) 64 else 32
     var wh: Int = 50
@@ -18,7 +18,11 @@ class Board(val gameS: GameS, val game: Game, val timer: Timer) : Group() {
     var first: Boolean = true
     var totalClean: Int = 0
     var opened: Int = 0
+    var flags: Int = 0
     var mode: AndroidMode = NULL
+    var gameS: GameS by Delegates.notNull<GameS>()
+    var game: Game by Delegates.notNull<Game>()
+    var timer: Timer by Delegates.notNull<Timer>()
     var fCounter: FlagCounter by Delegates.notNull<FlagCounter>()
 
     enum class AndroidMode {
@@ -29,7 +33,7 @@ class Board(val gameS: GameS, val game: Game, val timer: Timer) : Group() {
 
     fun isFlagMode(): Boolean = mode == FLAG
 
-    init {
+    fun init() {
         cells = Array(wh) { x ->
             Array(wh) { y ->
                 val mined = MathUtils.randomBoolean(.25f)

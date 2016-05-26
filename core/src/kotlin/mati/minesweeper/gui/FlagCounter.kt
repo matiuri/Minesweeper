@@ -17,6 +17,17 @@ class FlagCounter(private val game: Game, private val board: Board, private val 
         label.x = maxX - label.width
     }
 
+    fun init(flags: Int) {
+        this.flags = flags
+        if (board.first) {
+            label.setText("Start the game opening a cell")
+        } else {
+            mines = board.mines
+            label.setText("$flags Flags / $mines Mines")
+        }
+        label.x = maxX - label.width
+    }
+
     fun flag() {
         flags++
         label.setText("$flags Flags / $mines Mines")

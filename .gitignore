@@ -1,5 +1,6 @@
 ## General
 *.l
+*.dat
 untracked/
 .directory
 

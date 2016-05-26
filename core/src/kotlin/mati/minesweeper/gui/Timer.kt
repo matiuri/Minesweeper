@@ -2,6 +2,7 @@ package mati.minesweeper.gui
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import mati.advancedgdx.io.Serializable
 import mati.advancedgdx.utils.createLabel
 import mati.minesweeper.Game
 
@@ -60,5 +61,22 @@ class Timer(private val game: Game) {
         else label.setText("${label.text}$s$colonS")
         if (ms < 10) label.setText("${label.text}0$ms")
         else label.setText("${label.text}$ms")
+    }
+
+    class TimerSerializer() : Serializable<Timer> {
+        private var time: Float = 0f
+        private var counting: Boolean = false
+
+        override fun preserialize(t: Timer) {
+            time = t.time
+            counting = t.counting
+        }
+
+        override fun recover(): Timer {
+            val timer: Timer = Timer(Game.game)
+            timer.time = time
+            timer.counting = counting
+            return timer
+        }
     }
 }
