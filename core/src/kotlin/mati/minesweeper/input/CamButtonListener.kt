@@ -2,7 +2,6 @@ package mati.minesweeper.input
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 
 class CamButtonListener() : InputListener() {
     var pressed: Boolean = false
