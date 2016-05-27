@@ -17,6 +17,8 @@ import mati.minesweeper.gui.*
 import mati.minesweeper.gui.Timer.TimerSerializer
 import mati.minesweeper.input.CamButtonListener
 import mati.minesweeper.io.BoardSerializer
+import mati.minesweeper.io.CamSerializer
+import mati.minesweeper.io.CamSerializer.Serializer
 import kotlin.properties.Delegates
 
 class GameS(game: Game) : Screen(game) {
@@ -74,10 +76,16 @@ class GameS(game: Game) : Screen(game) {
         CBLD = CBL[2]
         CBLR = CBL[3]
 
-        cam.position.x = board.wh.toFloat() * board.size / 2f
-        cam.position.y = board.wh.toFloat() * board.size / 2f
-        cam.zoom = camZ
-        cam.update()
+        if (newGame || !game.ioManager.exists("camera")) {
+            cam.position.x = board.wh.toFloat() * board.size / 2f
+            cam.position.y = board.wh.toFloat() * board.size / 2f
+            cam.zoom = camZ
+            cam.update()
+        } else {
+            val camData: CamSerializer = game.ioManager.load("camera", Serializer::class)
+            cam.position.set(camData.position)
+            cam.zoom = camData.zoom
+        }
 
         Gdx.input.inputProcessor = InputMultiplexer(gui, stage)
     }
@@ -107,9 +115,9 @@ class GameS(game: Game) : Screen(game) {
         AdvancedGame.log.d("${this.javaClass.simpleName}", "Game Over. ${timer.label.text}")
         Gdx.input.inputProcessor = gui
         if (isDesktop())
-            Gdx.graphics.setCursor(Game.game.cursors[0])
+            Gdx.graphics.setCursor((game as Game).cursors[0])
         gameOverDialog(gui)
-        Game.game.ioManager.delete("board").delete("timer")
+        game.ioManager.delete("board").delete("timer").delete("camera")
     }
 
     fun win() {
@@ -117,9 +125,9 @@ class GameS(game: Game) : Screen(game) {
         AdvancedGame.log.d("${this.javaClass.simpleName}", "WIN! ${timer.label.text}")
         Gdx.input.inputProcessor = gui
         if (isDesktop())
-            Gdx.graphics.setCursor(Game.game.cursors[0])
+            Gdx.graphics.setCursor((game as Game).cursors[0])
         winDialog(gui)
-        Game.game.ioManager.delete("board").delete("timer")
+        game.ioManager.delete("board").delete("timer").delete("camera")
     }
 
     override fun hide() {

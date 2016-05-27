@@ -17,8 +17,11 @@ import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
 import mati.minesweeper.Game.Static.game
 import mati.minesweeper.board.Board
+import mati.minesweeper.gui.Timer.TimerSerializer
 import mati.minesweeper.input.CamButtonListener
 import mati.minesweeper.io.BoardSerializer
+import mati.minesweeper.io.CamSerializer
+import mati.minesweeper.io.CamSerializer.Serializer
 import mati.minesweeper.screens.GameS
 
 fun GUIBase(gui: Stage, board: Board): Image {
@@ -135,7 +138,11 @@ fun guiButtons(board: Board, gui: Stage, timer: Timer, cam: OrthographicCamera):
     save.color = Color.YELLOW
     save.addListener1 { e, a ->
         game.ioManager.save("board", board, BoardSerializer())
-        game.ioManager.save("timer", timer, Timer.TimerSerializer())
+        game.ioManager.save("timer", timer, TimerSerializer())
+        val camSer: CamSerializer = CamSerializer()
+        camSer.init(cam)
+        game.ioManager.save("camera", camSer, Serializer())
+
         game.scrManager.change("Title")
     }
     dialog.button(save)
@@ -150,7 +157,7 @@ fun guiButtons(board: Board, gui: Stage, timer: Timer, cam: OrthographicCamera):
             secure = true
             exit.color = Color.RED
         } else {
-            game.ioManager.delete("board").delete("timer")
+            game.ioManager.delete("board").delete("timer").delete("camera")
             secure = false
             game.scrManager.change("Title")
             dialog.hide()
