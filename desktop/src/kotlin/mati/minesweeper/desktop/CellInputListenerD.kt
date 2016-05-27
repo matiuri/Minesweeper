@@ -12,8 +12,6 @@ class CellInputListenerD(private val cell: Cell) : InputListener() {
         if ((button == 0 && !cell.flagged && !cell.opened) || (button == 2 && !cell.flagged && cell.opened)) {
             cell.selected = true
             checked = true
-//            log.d("${this.javaClass.simpleName}:${Thread.currentThread().stackTrace[1].methodName}",
-//                    "Button=$button, Flagged=${cell.flagged}, Opened=${cell.opened}")
             return true
         } else if (button == 1 && !cell.opened) {
             cell.flag()
@@ -23,8 +21,6 @@ class CellInputListenerD(private val cell: Cell) : InputListener() {
 
     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
         if (checked) {
-//            log.d("${this.javaClass.simpleName}:${Thread.currentThread().stackTrace[1].methodName}",
-//                    "Button=$button, Flagged=${cell.flagged}, Opened=${cell.opened}")
             if (button == 0 && cell.selected) {
                 if (cell.board.first)
                     cell.board.openFirst(cell)

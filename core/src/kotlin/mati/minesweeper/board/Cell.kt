@@ -1,20 +1,12 @@
 package mati.minesweeper.board
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle
-import mati.advancedgdx.AdvancedGame.Static.log
 import mati.advancedgdx.graphics.Animation
-import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
-import mati.minesweeper.screens.GameS
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
@@ -103,85 +95,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
 
     fun open() {
         opened = true
-        if (mined) {
-            // Game Over
-            board.timer.stop()
-            log.d("${this.javaClass.simpleName}", "Game Over. ${board.timer.label.text}")
-            board.openMined()
-            Gdx.input.inputProcessor = board.gameS.gui
-            if (isDesktop())
-                Gdx.graphics.setCursor(board.game.cursors[0])
-            val dialog: Dialog = Dialog("", WindowStyle(board.game.astManager["GameOverF", BitmapFont::class],
-                    Color.WHITE, createNPD(board.game.astManager["Dialog", Texture::class], 5)))
-            dialog.color = Color.RED
-
-
-            dialog.text(createLabel("Game Over!", board.game.astManager["GameOverF", BitmapFont::class]))
-
-            val retry: TextButton = createButton("Try Again", board.game.astManager["GeneralW", BitmapFont::class],
-                    createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
-                    createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
-            retry.color = Color.GREEN
-            retry.addListener1 { e, a ->
-                (board.game.scrManager["Game"] as GameS).newGame = true
-                board.game.scrManager.change("Game")
-                dialog.hide()
-            }
-            dialog.button(retry)
-
-            val menu: TextButton = createButton("Main Menu", board.game.astManager["GeneralW", BitmapFont::class],
-                    createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
-                    createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
-            menu.color = Color.RED
-            menu.addListener1 { e, a ->
-                board.game.scrManager.change("Title")
-                dialog.hide()
-            }
-            dialog.button(menu)
-
-            dialog.show(board.gameS.gui)
-            board.game.ioManager.delete("board").delete("timer")
-        } else {
-            board.opened++
-            if (board.opened == board.totalClean) {
-                // WIN!
-                board.timer.stop()
-                log.d("${this.javaClass.simpleName}", "WIN! ${board.timer.label.text}")
-                Gdx.input.inputProcessor = board.gameS.gui
-                if (isDesktop())
-                    Gdx.graphics.setCursor(board.game.cursors[0])
-                val dialog: Dialog = Dialog("", WindowStyle(board.game.astManager["WinF", BitmapFont::class],
-                        Color.WHITE, createNPD(board.game.astManager["Dialog", Texture::class], 5)))
-                dialog.color = Color.GREEN
-
-                dialog.text(createLabel("Congratulations!", board.game.astManager["WinF", BitmapFont::class]))
-
-                val replay: TextButton = createButton("Play Again",
-                        board.game.astManager["GeneralW", BitmapFont::class],
-                        createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
-                        createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
-                replay.color = Color.GREEN
-                replay.addListener1 { e, a ->
-                    (board.game.scrManager["Game"] as GameS).newGame = true
-                    board.game.scrManager.change("Game")
-                    dialog.hide()
-                }
-                dialog.button(replay)
-
-                val menu: TextButton = createButton("Main Menu", board.game.astManager["GeneralW", BitmapFont::class],
-                        createNPD(board.game.astManager["ButtonUp", Texture::class], 8),
-                        createNPD(board.game.astManager["ButtonDown", Texture::class], 8))
-                menu.color = Color.RED
-                menu.addListener1 { e, a ->
-                    board.game.scrManager.change("Title")
-                    dialog.hide()
-                }
-                dialog.button(menu)
-
-                dialog.show(board.gameS.gui)
-                board.game.ioManager.delete("board").delete("timer")
-            } else openAround()
-        }
+        if (board.check(this)) openAround()
     }
 
     fun flag() {

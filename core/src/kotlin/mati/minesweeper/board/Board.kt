@@ -20,10 +20,9 @@ class Board() : Group() {
     var opened: Int = 0
     var flags: Int = 0
     var mode: AndroidMode = NULL
-    var gameS: GameS by Delegates.notNull<GameS>()
-    var game: Game by Delegates.notNull<Game>()
     var timer: Timer by Delegates.notNull<Timer>()
     var fCounter: FlagCounter by Delegates.notNull<FlagCounter>()
+    private var gameS: GameS = Game.game.scrManager["Game"] as GameS
 
     enum class AndroidMode {
         NULL, OPEN, FLAG
@@ -75,5 +74,20 @@ class Board() : Group() {
                 }
             }
         }
+    }
+
+    fun check(cell: Cell): Boolean {
+        if (cell.mined) {
+            openMined()
+            gameS.gameOver()
+            return false
+        } else {
+            opened++
+            if (opened == totalClean) {
+                gameS.win()
+                return false
+            }
+        }
+        return true
     }
 }
