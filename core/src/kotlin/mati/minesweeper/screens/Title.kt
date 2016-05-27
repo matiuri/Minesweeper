@@ -24,7 +24,8 @@ class Title(game: Game) : Screen(game) {
     }
 
     override fun show() {
-        stage.clear()
+        val isSavedGame: Boolean = game.ioManager.exists("board") && game.ioManager.exists("timer") &&
+                game.ioManager.exists("camera")
         table = Table()
         stage.addActor(table)
         table.setFillParent(true)
@@ -34,28 +35,57 @@ class Title(game: Game) : Screen(game) {
         table.add(title).colspan(3).pad(10f)
         table.row()
 
-        createPlayButton()
-        createContinueButton()
+        createPlayButton(isSavedGame)
+        createContinueButton(isSavedGame)
         createExitButton()
 
         Gdx.input.inputProcessor = stage
     }
 
-    private fun createPlayButton() {
+    private fun createPlayButton(isSavedGame: Boolean) {
         val play: TextButton = createButton("New Game", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
-        play.color = Color.BLUE
         table.add(play).pad(5f).fill()
 
-        play.addListener1 { event, actor ->
-            (game.scrManager["Game"] as GameS).newGame = true
-            game.scrManager.change("Game")
+        if (!isSavedGame) {
+            play.color = Color.BLUE
+            play.addListener1 { event, actor ->
+                (game.scrManager["Game"] as GameS).newGame = true
+                game.scrManager.change("Game")
+            }
+        } else {
+            play.color = Color(0f, 0f, 0.25f, 1f)
+
+            var secure: Boolean = false
+            play.addListener1 { event, actor ->
+                if (!secure) {
+                    secure = true
+                    play.color = Color.BLUE
+
+                    val runnable: Runnable = Runnable {
+                        val time: Long = System.nanoTime()
+                        var timeSec: Double = time / 1000000000.0
+                        var currentTime: Double = 0.0
+                        while (currentTime < 5.0) {
+                            val temp: Double = System.nanoTime() / 1000000000.0
+                            currentTime += temp - timeSec
+                            timeSec = temp
+                        }
+                        secure = false
+                        play.color = Color(0f, 0f, 0.25f, 1f)
+                    }
+                    Thread(runnable).start()
+                } else {
+                    (game.scrManager["Game"] as GameS).newGame = true
+                    game.scrManager.change("Game")
+                }
+            }
         }
     }
 
-    private fun createContinueButton() {
-        val cont: TextButton = if (!(game.ioManager.exists("board") && game.ioManager.exists("timer")))
+    private fun createContinueButton(isSavedGame: Boolean) {
+        val cont: TextButton = if (!isSavedGame)
             createButton("Load Game", game.astManager["GeneralB", BitmapFont::class],
                     createNPD(game.astManager["ButtonLocked", Texture::class], 8),
                     createNPD(game.astManager["ButtonLocked", Texture::class], 8))
@@ -64,7 +94,7 @@ class Title(game: Game) : Screen(game) {
                     createNPD(game.astManager["ButtonUp", Texture::class], 8),
                     createNPD(game.astManager["ButtonDown", Texture::class], 8))
 
-        if (!(game.ioManager.exists("board") && game.ioManager.exists("timer")))
+        if (!isSavedGame)
             cont.color = Color.DARK_GRAY
         else {
             cont.color = Color.ORANGE

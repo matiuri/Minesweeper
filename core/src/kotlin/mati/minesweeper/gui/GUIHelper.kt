@@ -40,7 +40,7 @@ fun GUIBase(gui: Stage, board: Board): Image {
         gui.addActor(table)
         table.setBounds(0f, 32f + 24f, 64f, gui.height - 32f - 64f - 2f * 24f)
 
-        val buttonNull: TextButton = createButton("Null", game.astManager["AndroidF", BitmapFont::class],
+        val buttonNull: TextButton = createButton("Safe", game.astManager["AndroidF", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8),
                 createNPD(game.astManager["ButtonDown", Texture::class], 8))
@@ -75,7 +75,7 @@ fun GUIBase(gui: Stage, board: Board): Image {
         val group: ButtonGroup<TextButton> = ButtonGroup(buttonNull, buttonOpen, buttonFlag)
         group.setMinCheckCount(1)
         group.setMaxCheckCount(1)
-        group.setChecked("Null")
+        group.setChecked(buttonNull.text.toString())
     }
 
     val guiTop: Image = Image(createNPD(game.astManager["GUIt", Texture::class], 0, 0, 24, 24))
@@ -156,6 +156,20 @@ fun guiButtons(board: Board, gui: Stage, timer: Timer, cam: OrthographicCamera):
         if (!secure) {
             secure = true
             exit.color = Color.RED
+
+            val runnable: Runnable = Runnable {
+                val time: Long = System.nanoTime()
+                var timeSec: Double = time / 1000000000.0
+                var currentTime: Double = 0.0
+                while (currentTime < 5.0) {
+                    val temp: Double = System.nanoTime() / 1000000000.0
+                    currentTime += temp - timeSec
+                    timeSec = temp
+                }
+                secure = false
+                exit.color = Color(0.5f, 0f, 0f, 1f)
+            }
+            Thread(runnable).start()
         } else {
             game.ioManager.delete("board").delete("timer").delete("camera")
             secure = false
