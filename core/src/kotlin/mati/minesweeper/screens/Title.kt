@@ -52,7 +52,7 @@ class Title(game: Game) : Screen(game) {
             play.color = Color.BLUE
             play.addListener1 { event, actor ->
                 (game.scrManager["Game"] as GameS).newGame = true
-                game.scrManager.change("Game")
+                game.scrManager.change("New")
             }
         } else {
             play.color = Color(0f, 0f, 0.25f, 1f)

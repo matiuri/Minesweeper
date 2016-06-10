@@ -26,56 +26,7 @@ import mati.minesweeper.screens.GameS
 
 fun GUIBase(gui: Stage, board: Board): Image {
     if (isAndroid()) {
-        val guiLeft: Image = Image(createNPD(game.astManager["GUIl", Texture::class], 24, 24, 0, 0))
-        guiLeft.setBounds(0f, 0f, 64f, gui.height)
-        guiLeft.color = Color.GOLD
-        gui.addActor(guiLeft)
-        guiLeft.addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return true
-            }
-        })
-
-        val table: Table = Table()
-        gui.addActor(table)
-        table.setBounds(0f, 32f + 24f, 64f, gui.height - 32f - 64f - 2f * 24f)
-
-        val buttonNull: TextButton = createButton("Safe", game.astManager["AndroidF", BitmapFont::class],
-                createNPD(game.astManager["ButtonUp", Texture::class], 8),
-                createNPD(game.astManager["ButtonDown", Texture::class], 8),
-                createNPD(game.astManager["ButtonDown", Texture::class], 8))
-        buttonNull.color = Color.GRAY
-        buttonNull.addListener2 { e, a ->
-            board.mode = Board.AndroidMode.NULL
-        }
-        table.add(buttonNull).pad(5f)
-        table.row()
-
-        val buttonOpen: TextButton = createButton("Open", game.astManager["AndroidF", BitmapFont::class],
-                createNPD(game.astManager["ButtonUp", Texture::class], 8),
-                createNPD(game.astManager["ButtonDown", Texture::class], 8),
-                createNPD(game.astManager["ButtonDown", Texture::class], 8))
-        buttonOpen.color = Color.RED
-        buttonOpen.addListener2 { e, a ->
-            board.mode = Board.AndroidMode.OPEN
-        }
-        table.add(buttonOpen).pad(5f)
-        table.row()
-
-        val buttonFlag: TextButton = createButton("Flag", game.astManager["AndroidF", BitmapFont::class],
-                createNPD(game.astManager["ButtonUp", Texture::class], 8),
-                createNPD(game.astManager["ButtonDown", Texture::class], 8),
-                createNPD(game.astManager["ButtonDown", Texture::class], 8))
-        buttonFlag.color = Color.BLUE
-        buttonFlag.addListener2 { e, a ->
-            board.mode = Board.AndroidMode.FLAG
-        }
-        table.add(buttonFlag).pad(5f)
-
-        val group: ButtonGroup<TextButton> = ButtonGroup(buttonNull, buttonOpen, buttonFlag)
-        group.setMinCheckCount(1)
-        group.setMaxCheckCount(1)
-        group.setChecked(buttonNull.text.toString())
+        androidButtons(board, gui)
     }
 
     val guiTop: Image = Image(createNPD(game.astManager["GUIt", Texture::class], 0, 0, 24, 24))
@@ -99,6 +50,59 @@ fun GUIBase(gui: Stage, board: Board): Image {
     })
 
     return guiBottom
+}
+
+private fun androidButtons(board: Board, gui: Stage) {
+    val guiLeft: Image = Image(createNPD(game.astManager["GUIl", Texture::class], 24, 24, 0, 0))
+    guiLeft.setBounds(0f, 0f, 64f, gui.height)
+    guiLeft.color = Color.GOLD
+    gui.addActor(guiLeft)
+    guiLeft.addListener(object : InputListener() {
+        override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            return true
+        }
+    })
+
+    val table: Table = Table()
+    gui.addActor(table)
+    table.setBounds(0f, 32f + 24f, 64f, gui.height - 32f - 64f - 2f * 24f)
+
+    val buttonNull: TextButton = createButton("Safe", game.astManager["AndroidF", BitmapFont::class],
+            createNPD(game.astManager["ButtonUp", Texture::class], 8),
+            createNPD(game.astManager["ButtonDown", Texture::class], 8),
+            createNPD(game.astManager["ButtonDown", Texture::class], 8))
+    buttonNull.color = Color.GRAY
+    buttonNull.addListener2 { e, a ->
+        board.mode = Board.AndroidMode.NULL
+    }
+    table.add(buttonNull).pad(5f)
+    table.row()
+
+    val buttonOpen: TextButton = createButton("Open", game.astManager["AndroidF", BitmapFont::class],
+            createNPD(game.astManager["ButtonUp", Texture::class], 8),
+            createNPD(game.astManager["ButtonDown", Texture::class], 8),
+            createNPD(game.astManager["ButtonDown", Texture::class], 8))
+    buttonOpen.color = Color.RED
+    buttonOpen.addListener2 { e, a ->
+        board.mode = Board.AndroidMode.OPEN
+    }
+    table.add(buttonOpen).pad(5f)
+    table.row()
+
+    val buttonFlag: TextButton = createButton("Flag", game.astManager["AndroidF", BitmapFont::class],
+            createNPD(game.astManager["ButtonUp", Texture::class], 8),
+            createNPD(game.astManager["ButtonDown", Texture::class], 8),
+            createNPD(game.astManager["ButtonDown", Texture::class], 8))
+    buttonFlag.color = Color.BLUE
+    buttonFlag.addListener2 { e, a ->
+        board.mode = Board.AndroidMode.FLAG
+    }
+    table.add(buttonFlag).pad(5f)
+
+    val group: ButtonGroup<TextButton> = ButtonGroup(buttonNull, buttonOpen, buttonFlag)
+    group.setMinCheckCount(1)
+    group.setMaxCheckCount(1)
+    group.setChecked(buttonNull.text.toString())
 }
 
 fun guiButtons(board: Board, gui: Stage, timer: Timer, cam: OrthographicCamera): Array<CamButtonListener> {
@@ -262,7 +266,7 @@ fun gameOverDialog(gui: Stage) {
     retry.color = Color.GREEN
     retry.addListener1 { e, a ->
         (Game.game.scrManager["Game"] as GameS).newGame = true
-        Game.game.scrManager.change("Game")
+        Game.game.scrManager.change("New")
         dialog.hide()
     }
     dialog.button(retry)
@@ -294,7 +298,7 @@ fun winDialog(gui: Stage) {
     replay.color = Color.GREEN
     replay.addListener1 { e, a ->
         (Game.game.scrManager["Game"] as GameS).newGame = true
-        Game.game.scrManager.change("Game")
+        Game.game.scrManager.change("New")
         dialog.hide()
     }
     dialog.button(replay)

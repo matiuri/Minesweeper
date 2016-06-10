@@ -11,6 +11,7 @@ import mati.advancedgdx.assets.FontLoader.FontLoaderParameter
 import mati.advancedgdx.utils.isDesktop
 import mati.minesweeper.board.Cell
 import mati.minesweeper.screens.GameS
+import mati.minesweeper.screens.NewGame
 import mati.minesweeper.screens.Title
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
@@ -37,7 +38,7 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     }
 
     private fun prepare() {
-        scrManager.add("Title", Title(this)).add("Game", GameS(this))
+        scrManager.add("Title", Title(this)).add("Game", GameS(this)).add("New", NewGame(this))
         astManager.queue("UbuntuBGen", "fonts/Ubuntu-B.ttf", FreeTypeFontGenerator::class)
                 .queue("UbuntuRGen", "fonts/Ubuntu-R.ttf", FreeTypeFontGenerator::class)
                 .queue("UbuntuMRGen", "fonts/UbuntuMono-R.ttf", FreeTypeFontGenerator::class)

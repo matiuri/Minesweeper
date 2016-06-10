@@ -7,6 +7,7 @@ import mati.minesweeper.board.Cell;
 public class BoardSerializer implements Serializable<Board> {
     private CellSkel[][] cskel;
     private int wh, mines, totalClean, opened, flags;
+    private float mineDensity;
     private boolean first;
 
     @Override
@@ -24,6 +25,7 @@ public class BoardSerializer implements Serializable<Board> {
         totalClean = board.getTotalClean();
         opened = board.getOpened();
         flags = board.getFCounter().getFlags();
+        mineDensity = board.getMineDensity();
         first = board.getFirst();
     }
 
@@ -43,6 +45,7 @@ public class BoardSerializer implements Serializable<Board> {
         board.setTotalClean(totalClean);
         board.setOpened(opened);
         board.setFlags(flags);
+        board.setMineDensity(mineDensity);
         board.setFirst(first);
         return board;
     }

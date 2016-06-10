@@ -7,12 +7,15 @@ import mati.minesweeper.board.Board.AndroidMode.*
 import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
 import mati.minesweeper.screens.GameS
+import mati.minesweeper.screens.NewGame
+import mati.minesweeper.screens.NewGame.Properties
 import kotlin.properties.Delegates
 
 class Board() : Group() {
     var cells: Array<Array<Cell>> by Delegates.notNull<Array<Array<Cell>>>()
     var size: Int = 64
-    var wh: Int = 50
+    var wh: Int = Properties.size.wh
+    var mineDensity: Float = Properties.difficulty.mineDensity
     var mines: Int = 0
     var first: Boolean = true
     var totalClean: Int = 0
@@ -34,7 +37,7 @@ class Board() : Group() {
     fun init() {
         cells = Array(wh) { x ->
             Array(wh) { y ->
-                val mined = MathUtils.randomBoolean(.25f)
+                val mined = MathUtils.randomBoolean(mineDensity)
                 val cell: Cell = Cell(x, y, size, mined, this)
                 if (mined) mines++
                 addActor(cell)
