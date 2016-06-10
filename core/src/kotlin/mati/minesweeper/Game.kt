@@ -60,6 +60,12 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     it.borderColor = Color.WHITE
                     it.borderWidth = 1f
                 })
+                .queue("GeneralR", "GeneralFontR", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                    it.size = 32
+                    it.color = Color.RED
+                    it.borderColor = Color.BLACK
+                    it.borderWidth = 1f
+                })
                 .queue("TimerF", "TimerFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuMRGen"]) {
                     it.size = 24
                     it.color = Color.GOLD

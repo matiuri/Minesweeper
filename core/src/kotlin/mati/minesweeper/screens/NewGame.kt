@@ -30,7 +30,7 @@ class NewGame(game: Game) : Screen(game) {
         table.setFillParent(true)
         table.pad(10f)
 
-        table.add(createLabel("New Game", game.astManager["Title", BitmapFont::class])).colspan(4).pad(5f)
+        table.add(createLabel("New Game", game.astManager["Title", BitmapFont::class])).colspan(5).pad(5f)
         table.row()
 
         difficulty()
@@ -75,7 +75,17 @@ class NewGame(game: Game) : Screen(game) {
             Properties.difficulty = Difficulty.HARD
         }
 
-        val group: ButtonGroup<TextButton> = ButtonGroup(easy, medium, hard)
+        val insane: TextButton = createButton("Insane", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        insane.color = Color(0.5f, 0f, 0f, 1f)
+        table.add(insane).pad(5f).fill()
+        insane.addListener2 { event, actor ->
+            Properties.difficulty = Difficulty.INSANE
+        }
+
+        val group: ButtonGroup<TextButton> = ButtonGroup(easy, medium, hard, insane)
         group.setMinCheckCount(1)
         group.setMaxCheckCount(1)
     }
@@ -113,7 +123,17 @@ class NewGame(game: Game) : Screen(game) {
             Properties.size = Size.LARGE
         }
 
-        val group: ButtonGroup<TextButton> = ButtonGroup(short, medium, large)
+        val insane: TextButton = createButton("Insane", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        insane.color = Color(0.5f, 0f, 0f, 1f)
+        table.add(insane).pad(5f).fill()
+        insane.addListener2 { event, actor ->
+            Properties.size = Size.INSANE
+        }
+
+        val group: ButtonGroup<TextButton> = ButtonGroup(short, medium, large, insane)
         group.setMinCheckCount(1)
         group.setMaxCheckCount(1)
     }
@@ -127,6 +147,8 @@ class NewGame(game: Game) : Screen(game) {
         back.addListener1 { event, actor ->
             game.scrManager.change("Title")
         }
+
+        table.add()
 
         val start: TextButton = createButton("New Game", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
@@ -178,10 +200,10 @@ class NewGame(game: Game) : Screen(game) {
     }
 
     enum class Difficulty(val mineDensity: Float) {
-        NONE(0f), EASY(0.15f), MEDIUM(0.2f), HARD(0.25f)
+        NONE(0f), EASY(0.15f), MEDIUM(0.25f), HARD(0.35f), INSANE(0.55f)
     }
 
     enum class Size(val wh: Int) {
-        NONE(0), SHORT(15), MEDIUM(30), LARGE(50)
+        NONE(0), SHORT(15), MEDIUM(30), LARGE(50), INSANE(100)
     }
 }
