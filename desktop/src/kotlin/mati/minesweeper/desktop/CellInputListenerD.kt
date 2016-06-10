@@ -1,8 +1,10 @@
 package mati.minesweeper.desktop
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import mati.minesweeper.Game
 import mati.minesweeper.board.Cell
 
 class CellInputListenerD(private val cell: Cell) : InputListener() {
@@ -15,6 +17,7 @@ class CellInputListenerD(private val cell: Cell) : InputListener() {
             return true
         } else if (button == 1 && !cell.opened) {
             cell.flag()
+            Game.game.astManager["OpenS", Sound::class].play(0.5f)
         }
         return false
     }
@@ -26,10 +29,12 @@ class CellInputListenerD(private val cell: Cell) : InputListener() {
                     cell.board.openFirst(cell)
                 else
                     cell.open()
+                Game.game.astManager["OpenS", Sound::class].play(0.5f)
                 cell.selected = false
             } else if (button == 2 && cell.selected) {
                 cell.openAround()
                 cell.selected = false
+                Game.game.astManager["OpenS", Sound::class].play(0.5f)
             }
             checked = false
         }

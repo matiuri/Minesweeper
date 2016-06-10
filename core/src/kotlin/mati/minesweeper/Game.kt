@@ -2,6 +2,7 @@ package mati.minesweeper
 
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
@@ -120,6 +121,9 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                 .queue("Dialog", "GUI/Dialog.png", Texture::class)
                 .queue("PauseUp", "GUI/PauseUp.png", Texture::class)
                 .queue("PauseDown", "GUI/PauseDown.png", Texture::class)
+                .queue("OpenS", "sounds/Open.ogg", Sound::class)
+                .queue("ExplosionS", "sounds/Explosion.ogg", Sound::class)
+                .queue("WinS", "sounds/Win.ogg", Sound::class)
                 .load {
                     if (isDesktop()) {
                         cursors = arrayOf(Gdx.graphics.newCursor(astManager["CursorBlue", Pixmap::class], 0, 0),

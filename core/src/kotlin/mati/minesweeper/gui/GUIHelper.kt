@@ -3,6 +3,7 @@
 package mati.minesweeper.gui
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
@@ -253,6 +254,7 @@ fun guiButtons(board: Board, gui: Stage, timer: Timer, cam: OrthographicCamera):
 }
 
 fun gameOverDialog(gui: Stage) {
+    game.astManager["ExplosionS", Sound::class].play(0.5f)
     val dialog: Dialog = Dialog("", Window.WindowStyle(Game.game.astManager["GameOverF", BitmapFont::class],
             Color.WHITE, createNPD(Game.game.astManager["Dialog", Texture::class], 5)))
     dialog.color = Color.RED
@@ -285,6 +287,7 @@ fun gameOverDialog(gui: Stage) {
 }
 
 fun winDialog(gui: Stage) {
+    game.astManager["WinS", Sound::class].play(0.5f)
     val dialog: Dialog = Dialog("", Window.WindowStyle(Game.game.astManager["WinF", BitmapFont::class],
             Color.WHITE, createNPD(Game.game.astManager["Dialog", Texture::class], 5)))
     dialog.color = Color.GREEN

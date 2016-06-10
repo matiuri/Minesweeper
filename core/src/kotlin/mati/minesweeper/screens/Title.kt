@@ -78,7 +78,7 @@ class Title(game: Game) : Screen(game) {
                     Thread(runnable).start()
                 } else {
                     (game.scrManager["Game"] as GameS).newGame = true
-                    game.scrManager.change("Game")
+                    game.scrManager.change("New")
                 }
             }
         }
