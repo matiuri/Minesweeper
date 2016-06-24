@@ -23,7 +23,7 @@ import kotlin.reflect.KClass
 class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     companion object Static {
         var game: Game by Delegates.notNull<Game>()
-        val superDebug: Boolean = false
+        val superDebug: Boolean = true
 
         fun init(game: Game) {
             this.game = game

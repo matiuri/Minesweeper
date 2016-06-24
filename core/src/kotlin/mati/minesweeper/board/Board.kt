@@ -59,7 +59,7 @@ class Board() : Group() {
         for (c1 in cells) {
             for (c in c1) {
                 c.setAroundMines()
-                if (c.aroundMines == 8) {
+                if (c.aroundMines == 8 && !c.mined) {
                     c.mined = true
                     mines++
                 }
