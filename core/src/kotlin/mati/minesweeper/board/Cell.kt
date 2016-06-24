@@ -49,9 +49,11 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
     override fun draw(batch: Batch?, parentAlpha: Float) {
         if (batch != null) {
             if (!opened) {
-                if (!selected)
+                if (!selected) {
+                    if (mined) batch.color = Color.RED
                     batch.draw(up, getX(), getY(), width, height)
-                else
+                    batch.color = Color.WHITE
+                } else
                     batch.draw(down, getX(), getY(), width, height)
                 if (flagged) batch.draw(flag, getX(), getY(), width, height)
             } else {
