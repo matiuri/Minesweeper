@@ -13,6 +13,7 @@ import mati.advancedgdx.utils.isDesktop
 import mati.minesweeper.board.Cell
 import mati.minesweeper.screens.GameS
 import mati.minesweeper.screens.NewGame
+import mati.minesweeper.screens.StatsScreen
 import mati.minesweeper.screens.Title
 import mati.minesweeper.statistics.Statistics
 import mati.minesweeper.statistics.Statistics.StatisticsSerializer
@@ -22,7 +23,7 @@ import kotlin.reflect.KClass
 class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     companion object Static {
         var game: Game by Delegates.notNull<Game>()
-        val superDebug: Boolean = true
+        val superDebug: Boolean = false
 
         fun init(game: Game) {
             this.game = game
@@ -47,6 +48,7 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
 
     private fun prepare() {
         scrManager.add("Title", Title(this)).add("Game", GameS(this)).add("New", NewGame(this))
+                .add("Stats", StatsScreen(this))
         astManager.queue("UbuntuBGen", "fonts/Ubuntu-B.ttf", FreeTypeFontGenerator::class)
                 .queue("UbuntuRGen", "fonts/Ubuntu-R.ttf", FreeTypeFontGenerator::class)
                 .queue("UbuntuMRGen", "fonts/UbuntuMono-R.ttf", FreeTypeFontGenerator::class)
@@ -148,6 +150,10 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     scrManager.change("Title")
                     if (ioManager.exists("stats")) stats = ioManager.load("stats", StatisticsSerializer::class)
                     else stats = Statistics()
+                    if (!stats.cheated) {
+                        stats.cheated = superDebug
+                        stats.save()
+                    }
                 }
     }
 

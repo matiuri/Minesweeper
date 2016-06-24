@@ -19,7 +19,7 @@ import mati.advancedgdx.utils.createNPD
 import mati.minesweeper.Game
 import kotlin.properties.Delegates
 
-class Title(game: Game) : Screen(game) {
+class Title(game: Game) : Screen<Game>(game) {
     private var stage: Stage by Delegates.notNull<Stage>()
     private var table: Table by Delegates.notNull<Table>()
     private var title: Label by Delegates.notNull<Label>()
@@ -38,11 +38,12 @@ class Title(game: Game) : Screen(game) {
         table.pad(20f)
 
         title = createLabel("Minesweeper", game.astManager["Title", BitmapFont::class])
-        table.add(title).colspan(3).pad(10f)
+        table.add(title).colspan(4).pad(10f)
         table.row()
 
         createPlayButton(isSavedGame)
         createContinueButton(isSavedGame)
+        createStatsButton()
         createExitButton()
 
         if (Game.superDebug) {
@@ -123,6 +124,17 @@ class Title(game: Game) : Screen(game) {
             }
         }
         table.add(cont).pad(5f).fill()
+    }
+
+    private fun createStatsButton() {
+        val stats: TextButton = createButton("Statistics", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        stats.color = Color.YELLOW
+        table.add(stats).pad(5f).fill()
+        stats.addListener1 { e, a ->
+            game.scrManager.change("Stats")
+        }
     }
 
     private fun createExitButton() {

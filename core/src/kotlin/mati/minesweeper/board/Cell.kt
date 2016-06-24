@@ -1,5 +1,7 @@
 package mati.minesweeper.board
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -47,10 +49,14 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
+        if (Game.superDebug) {
+            if (Gdx.input.isKeyJustPressed(Keys.F) && mined) flag()
+            if (Gdx.input.isKeyJustPressed(Keys.O) && !mined) open()
+        }
         if (batch != null) {
             if (!opened) {
                 if (!selected) {
-                    if (mined) batch.color = Color.RED
+                    if (Game.superDebug && mined) batch.color = Color.RED
                     batch.draw(up, getX(), getY(), width, height)
                     batch.color = Color.WHITE
                 } else

@@ -14,16 +14,19 @@ import mati.minesweeper.Game
 import mati.minesweeper.board.Board
 import mati.minesweeper.board.Cell
 import mati.minesweeper.gui.*
+import mati.minesweeper.gui.GUIHelper.GUIBase
+import mati.minesweeper.gui.GUIHelper.guiButtons
+import mati.minesweeper.gui.GUIHelper.winDialog
+import mati.minesweeper.gui.GUIHelper.gameOverDialog
 import mati.minesweeper.gui.Timer.TimerSerializer
 import mati.minesweeper.input.CamButtonListener
 import mati.minesweeper.io.BoardSerializer
 import mati.minesweeper.io.CamSerializer
 import mati.minesweeper.io.CamSerializer.Serializer
 import mati.minesweeper.screens.NewGame.Properties
-import mati.minesweeper.statistics.Statistics.WinLose
 import kotlin.properties.Delegates
 
-class GameS(game: Game) : Screen(game) {
+class GameS(game: Game) : Screen<Game>(game) {
     var stage: Stage by Delegates.notNull<Stage>()
     var gui: Stage by Delegates.notNull<Stage>()
     var timer: Timer by Delegates.notNull<Timer>()
@@ -40,12 +43,12 @@ class GameS(game: Game) : Screen(game) {
         stage = Stage(ScreenViewport(cam))
         camZ = cam.zoom
         gui = Stage(ScreenViewport())
-        timer = Timer(game as Game)
+        timer = Timer(game)
     }
 
     override fun show() {
         if (isDesktop())
-            Gdx.graphics.setCursor((game as Game).cursors[1])
+            Gdx.graphics.setCursor(game.cursors[1])
 
         if (newGame)
             timer.reset()
@@ -65,7 +68,7 @@ class GameS(game: Game) : Screen(game) {
         gui.addActor(timer.label)
         timer.label.setPosition(26f, 4f)
 
-        val fCounter: FlagCounter = FlagCounter(game as Game, board, guiBottom.width - 24f)
+        val fCounter: FlagCounter = FlagCounter(game, board, guiBottom.width - 24f)
         if (!newGame) fCounter.init(board.flags)
         board.fCounter = fCounter
         fCounter.label.setPosition(guiBottom.width - 24f - fCounter.label.width, 4f)
@@ -117,12 +120,10 @@ class GameS(game: Game) : Screen(game) {
         AdvancedGame.log.d("${this.javaClass.simpleName}", "Game Over. ${timer.label.text}")
         Gdx.input.inputProcessor = gui
         if (isDesktop())
-            Gdx.graphics.setCursor((game as Game).cursors[0])
+            Gdx.graphics.setCursor(game.cursors[0])
         gameOverDialog(gui)
         game.ioManager.delete("board").delete("timer").delete("camera")
-        (game as Game).stats.wins.add(WinLose(false, Properties.difficulty, Properties.size, timer.time))
-        game.stats.save()
-        game.stats.print()
+        game.stats.addEntry(false, Properties.difficulty, Properties.size, timer.time)
     }
 
     fun win() {
@@ -130,12 +131,10 @@ class GameS(game: Game) : Screen(game) {
         AdvancedGame.log.d("${this.javaClass.simpleName}", "WIN! ${timer.label.text}")
         Gdx.input.inputProcessor = gui
         if (isDesktop())
-            Gdx.graphics.setCursor((game as Game).cursors[0])
+            Gdx.graphics.setCursor(game.cursors[0])
         winDialog(gui)
         game.ioManager.delete("board").delete("timer").delete("camera")
-        (game as Game).stats.wins.add(WinLose(true, Properties.difficulty, Properties.size, timer.time))
-        game.stats.save()
-        game.stats.print()
+        game.stats.addEntry(true, Properties.difficulty, Properties.size, timer.time)
     }
 
     override fun hide() {

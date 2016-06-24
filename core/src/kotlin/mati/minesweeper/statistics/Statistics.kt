@@ -24,12 +24,23 @@ class Statistics() {
     }
 
     var wins: MutableList<WinLose> = ArrayList()
+    var cheated: Boolean = false
 
-    fun winPercentage(wins: List<WinLose> = this.wins): Float {
-        var sum: Float = 0f
-        for (e in wins) if (e.win) sum++
-        return sum / wins.size.toFloat()
+    fun addEntry(win: Boolean, difficulty: Difficulty, size: Size, time: Float) {
+        wins.add(WinLose(win, difficulty, size, time))
+        save()
+        print()
     }
+
+    fun totalWins(wins: List<WinLose> = this.wins): Int {
+        var sum: Int = 0
+        for (e in wins) if (e.win) sum++
+        return sum
+    }
+
+    fun winPercentage(wins: List<WinLose> = this.wins): Float =
+            if (wins.size != 0) totalWins(wins).toFloat() / wins.size.toFloat()
+            else 0f
 
     fun winStreak(wins: List<WinLose> = this.wins): Int {
         var streak: Int = 0
@@ -38,6 +49,12 @@ class Statistics() {
             else break
         }
         return streak
+    }
+
+    fun totalTime(wins: List<WinLose> = this.wins): Float {
+        var time: Float = 0f
+        for (e in wins) time += e.time
+        return time
     }
 
     fun filterWins(difficulty: Difficulty, size: Size): List<WinLose> {
@@ -55,14 +72,17 @@ class Statistics() {
 
     class StatisticsSerializer : Serializable<Statistics> {
         var wins: MutableList<WinLose> = ArrayList()
+        var cheated: Boolean = false
 
         override fun preserialize(t: Statistics) {
             wins = t.wins
+            cheated = t.cheated
         }
 
         override fun recover(): Statistics {
             val stats: Statistics = Statistics()
             stats.wins = wins
+            stats.cheated = cheated
             return stats
         }
     }

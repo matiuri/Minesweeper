@@ -14,7 +14,7 @@ import mati.advancedgdx.utils.*
 import mati.minesweeper.Game
 import kotlin.properties.Delegates
 
-class NewGame(game: Game) : Screen(game) {
+class NewGame(game: Game) : Screen<Game>(game) {
     private var stage: Stage by Delegates.notNull<Stage>()
     private var table: Table by Delegates.notNull<Table>()
 
