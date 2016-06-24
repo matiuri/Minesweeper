@@ -8,7 +8,7 @@ import mati.minesweeper.Game
 
 class Timer(private val game: Game) {
     val label: Label = createLabel("Time: 00:00:00:00", game.astManager["TimerF", BitmapFont::class])
-    private var time: Float = 0f
+    var time: Float = 0f
     private var counting: Boolean = false
     private var colon: Boolean = true
     private var colonTime: Float = 0f

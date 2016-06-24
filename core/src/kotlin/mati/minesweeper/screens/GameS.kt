@@ -19,6 +19,8 @@ import mati.minesweeper.input.CamButtonListener
 import mati.minesweeper.io.BoardSerializer
 import mati.minesweeper.io.CamSerializer
 import mati.minesweeper.io.CamSerializer.Serializer
+import mati.minesweeper.screens.NewGame.Properties
+import mati.minesweeper.statistics.Statistics.WinLose
 import kotlin.properties.Delegates
 
 class GameS(game: Game) : Screen(game) {
@@ -118,6 +120,9 @@ class GameS(game: Game) : Screen(game) {
             Gdx.graphics.setCursor((game as Game).cursors[0])
         gameOverDialog(gui)
         game.ioManager.delete("board").delete("timer").delete("camera")
+        (game as Game).stats.wins.add(WinLose(false, Properties.difficulty, Properties.size, timer.time))
+        game.stats.save()
+        game.stats.print()
     }
 
     fun win() {
@@ -128,6 +133,9 @@ class GameS(game: Game) : Screen(game) {
             Gdx.graphics.setCursor((game as Game).cursors[0])
         winDialog(gui)
         game.ioManager.delete("board").delete("timer").delete("camera")
+        (game as Game).stats.wins.add(WinLose(true, Properties.difficulty, Properties.size, timer.time))
+        game.stats.save()
+        game.stats.print()
     }
 
     override fun hide() {

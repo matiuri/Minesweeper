@@ -14,12 +14,15 @@ import mati.minesweeper.board.Cell
 import mati.minesweeper.screens.GameS
 import mati.minesweeper.screens.NewGame
 import mati.minesweeper.screens.Title
+import mati.minesweeper.statistics.Statistics
+import mati.minesweeper.statistics.Statistics.StatisticsSerializer
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     companion object Static {
         var game: Game by Delegates.notNull<Game>()
+        val superDebug: Boolean = true
 
         fun init(game: Game) {
             this.game = game
@@ -27,6 +30,7 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     }
 
     var cursors: Array<Cursor> by Delegates.notNull<Array<Cursor>>()
+    var stats: Statistics by Delegates.notNull<Statistics>()
 
     override fun create() {
         Static.init(this)
@@ -35,7 +39,10 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
         Gdx.input.isCatchBackKey = true
         Gdx.app.logLevel = LOG_DEBUG
         prepare()
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
+        if (superDebug)
+            Gdx.gl.glClearColor(0.25f, 0f, 0f, 1f)
+        else
+            Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f)
     }
 
     private fun prepare() {
@@ -66,6 +73,12 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     it.color = Color.RED
                     it.borderColor = Color.BLACK
                     it.borderWidth = 1f
+                })
+                .queue("WarningF", "WarningFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuRGen"]) {
+                    it.size = 48
+                    it.color = Color.WHITE
+                    it.borderColor = Color.BLACK
+                    it.borderWidth = 5f
                 })
                 .queue("TimerF", "TimerFont", BitmapFont::class, FontLoaderParameter(astManager["UbuntuMRGen"]) {
                     it.size = 24
@@ -133,6 +146,8 @@ class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
                     Cell.init(this)
                     scrManager.loadAll()
                     scrManager.change("Title")
+                    if (ioManager.exists("stats")) stats = ioManager.load("stats", StatisticsSerializer::class)
+                    else stats = Statistics()
                 }
     }
 
