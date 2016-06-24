@@ -8,7 +8,7 @@ import mati.minesweeper.Game
 
 class Timer(private val game: Game) {
     val label: Label = createLabel("Time: 00:00:00:00", game.astManager["TimerF", BitmapFont::class])
-    private var time: Float = 0f
+    var time: Float = 0f
     private var counting: Boolean = false
     private var colon: Boolean = true
     private var colonTime: Float = 0f
@@ -41,14 +41,12 @@ class Timer(private val game: Game) {
             }
         }
 
-        val hf: Float = (time / 3600f)
-        val h: Int = hf.toInt()
-        val mf: Float = (hf - h) * 60f
-        val m: Int = mf.toInt()
-        val sf: Float = (mf - m) * 60f
-        val s: Int = sf.toInt()
-        val msf: Float = (sf - s) * 60f
-        val ms: Int = 100 * msf.toInt() / 60
+        val formattedTime: Array<Int> = formatTime(time)
+
+        val h: Int = formattedTime[0]
+        val m: Int = formattedTime[1]
+        val s: Int = formattedTime[2]
+        val ms: Int = 100 * formattedTime[3] / 60
 
         val colonS: String = if (colon) ":" else " "
 
@@ -61,6 +59,20 @@ class Timer(private val game: Game) {
         else label.setText("${label.text}$s$colonS")
         if (ms < 10) label.setText("${label.text}0$ms")
         else label.setText("${label.text}$ms")
+    }
+
+    companion object Static {
+        fun formatTime(time: Float): Array<Int> {
+            val hf: Float = (time / 3600f)
+            val h: Int = hf.toInt()
+            val mf: Float = (hf - h) * 60f
+            val m: Int = mf.toInt()
+            val sf: Float = (mf - m) * 60f
+            val s: Int = sf.toInt()
+            val msf: Float = (sf - s) * 60f
+            val ms: Int = 100 * msf.toInt() / 60
+            return arrayOf(h, m, s, ms)
+        }
     }
 
     class TimerSerializer() : Serializable<Timer> {

@@ -7,7 +7,6 @@ import mati.minesweeper.board.Board.AndroidMode.*
 import mati.minesweeper.gui.FlagCounter
 import mati.minesweeper.gui.Timer
 import mati.minesweeper.screens.GameS
-import mati.minesweeper.screens.NewGame
 import mati.minesweeper.screens.NewGame.Properties
 import kotlin.properties.Delegates
 
@@ -60,6 +59,10 @@ class Board() : Group() {
         for (c1 in cells) {
             for (c in c1) {
                 c.setAroundMines()
+                if (c.aroundMines == 8) {
+                    c.mined = true
+                    mines++
+                }
             }
         }
         cell.open()

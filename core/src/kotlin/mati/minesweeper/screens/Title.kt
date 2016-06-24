@@ -5,19 +5,25 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import mati.advancedgdx.screens.Screen
-import mati.advancedgdx.utils.*
+import mati.advancedgdx.utils.addListener1
+import mati.advancedgdx.utils.createButton
+import mati.advancedgdx.utils.createLabel
+import mati.advancedgdx.utils.createNPD
 import mati.minesweeper.Game
 import kotlin.properties.Delegates
 
-class Title(game: Game) : Screen(game) {
+class Title(game: Game) : Screen<Game>(game) {
     private var stage: Stage by Delegates.notNull<Stage>()
     private var table: Table by Delegates.notNull<Table>()
     private var title: Label by Delegates.notNull<Label>()
+    private var warningStage: Stage? = null
 
     override fun load() {
         stage = Stage(ScreenViewport())
@@ -32,12 +38,26 @@ class Title(game: Game) : Screen(game) {
         table.pad(20f)
 
         title = createLabel("Minesweeper", game.astManager["Title", BitmapFont::class])
-        table.add(title).colspan(3).pad(10f)
+        table.add(title).colspan(4).pad(10f)
         table.row()
 
         createPlayButton(isSavedGame)
         createContinueButton(isSavedGame)
+        createStatsButton()
         createExitButton()
+
+        if (Game.superDebug) {
+            warningStage = Stage(ScreenViewport())
+            val warning = createLabel("WARNING: Super Debug Mode On", game.astManager["WarningF", BitmapFont::class])
+            warningStage?.addActor(warning)
+            warning.setPosition((Gdx.graphics.width - warning.width) / 2, (Gdx.graphics.height - warning.height) / 2)
+            warning.addAction(Actions.repeat(RepeatAction.FOREVER,
+                    Actions.sequence(
+                            Actions.color(Color.RED, 0.25f),
+                            Actions.color(Color.YELLOW, 0.25f)
+                    )
+            ))
+        }
 
         Gdx.input.inputProcessor = stage
     }
@@ -106,6 +126,17 @@ class Title(game: Game) : Screen(game) {
         table.add(cont).pad(5f).fill()
     }
 
+    private fun createStatsButton() {
+        val stats: TextButton = createButton("Statistics", game.astManager["GeneralW", BitmapFont::class],
+                createNPD(game.astManager["ButtonUp", Texture::class], 8),
+                createNPD(game.astManager["ButtonDown", Texture::class], 8))
+        stats.color = Color.YELLOW
+        table.add(stats).pad(5f).fill()
+        stats.addListener1 { e, a ->
+            game.scrManager.change("Stats")
+        }
+    }
+
     private fun createExitButton() {
         val exit: TextButton = createButton("Exit", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
@@ -120,13 +151,18 @@ class Title(game: Game) : Screen(game) {
     override fun render(delta: Float) {
         stage.act(delta)
         stage.draw()
+
+        warningStage?.act(delta)
+        warningStage?.draw()
     }
 
     override fun hide() {
         stage.clear()
+        warningStage?.clear()
     }
 
     override fun dispose() {
         stage.dispose()
+        warningStage?.dispose()
     }
 }
