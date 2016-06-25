@@ -46,7 +46,7 @@ class Timer(private val game: Game) {
         val h: Int = formattedTime[0]
         val m: Int = formattedTime[1]
         val s: Int = formattedTime[2]
-        val ms: Int = 100 * formattedTime[3] / 60
+        val ms: Int = formattedTime[3]
 
         val colonS: String = if (colon) ":" else " "
 
