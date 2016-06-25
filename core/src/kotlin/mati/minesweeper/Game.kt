@@ -17,16 +17,30 @@ import mati.minesweeper.screens.StatsScreen
 import mati.minesweeper.screens.Title
 import mati.minesweeper.statistics.Statistics
 import mati.minesweeper.statistics.Statistics.StatisticsSerializer
+import java.security.MessageDigest
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 class Game(val cellInput: KClass<out InputListener>) : AdvancedGame() {
     companion object Static {
         var game: Game by Delegates.notNull<Game>()
-        val superDebug: Boolean = true
+        var superDebug: Boolean by Delegates.notNull<Boolean>()
 
         fun init(game: Game) {
             this.game = game
+
+            superDebug = if (Gdx.files.local("debug").exists() &&
+                    Gdx.files.local("debug").readString().substring(0, 2) == "on") {
+                val digest: MessageDigest = MessageDigest.getInstance("SHA-512")
+                val text = Gdx.files.local("debug").readString().substring(2)
+                digest.update(text.toByteArray())
+                val hasharr: ByteArray = digest.digest()
+                val sb: StringBuffer = StringBuffer()
+                for (i in hasharr.indices)
+                    sb.append(Integer.toString((hasharr[i].toInt() and  0xff) + 0x100, 16).substring(1));
+                sb.toString() == "70620298b6ffda5a28a02eae45c3f07f930b6f6cbb41023134e86e160cb6b51290cbb03" +
+                        "6db26bf750deb9d3c846737fccc3584543c84127056fbb6c574eb0b94"
+            } else false
         }
     }
 
