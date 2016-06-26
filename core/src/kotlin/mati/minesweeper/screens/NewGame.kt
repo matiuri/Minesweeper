@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import mati.advancedgdx.screens.Screen
 import mati.advancedgdx.utils.*
@@ -91,7 +92,7 @@ class NewGame(game: Game) : Screen<Game>(game) {
     }
 
     private fun size() {
-        table.add(createLabel("Difficulty", game.astManager["GeneralB", BitmapFont::class])).pad(5f)
+        table.add(createLabel("Size", game.astManager["GeneralB", BitmapFont::class])).pad(5f).align(Align.center)
 
         val short: TextButton = createButton("Short", game.astManager["GeneralW", BitmapFont::class],
                 createNPD(game.astManager["ButtonUp", Texture::class], 8),
@@ -200,10 +201,10 @@ class NewGame(game: Game) : Screen<Game>(game) {
     }
 
     enum class Difficulty(val mineDensity: Float) {
-        NONE(0f), EASY(0.15f), MEDIUM(0.25f), HARD(0.35f), INSANE(0.55f)
+        NONE(0f), EASY(0.15f), MEDIUM(0.225f), HARD(0.3f), INSANE(0.55f)
     }
 
     enum class Size(val wh: Int) {
-        NONE(0), SHORT(15), MEDIUM(30), LARGE(50), INSANE(100)
+        NONE(0), SHORT(15), MEDIUM(25), LARGE(50), INSANE(100)
     }
 }

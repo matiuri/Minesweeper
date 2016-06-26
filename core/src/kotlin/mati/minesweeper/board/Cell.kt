@@ -27,6 +27,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
         private var mine: Animation by Delegates.notNull<Animation>()
         private var flag: Texture by Delegates.notNull<Texture>()
         private var input: KClass<out InputListener> by Delegates.notNull<KClass<out InputListener>>()
+        private var show: Boolean = false
 
         fun init(game: Game) {
             up = game.astManager["CellUp", Texture::class]
@@ -41,6 +42,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
 
         fun update(delta: Float) {
             mine.update(delta)
+            if (Game.superDebug && Gdx.input.isKeyJustPressed(Keys.D)) show = !show
         }
     }
 
@@ -56,7 +58,7 @@ class Cell(var x: Int, var y: Int, var size: Int, var mined: Boolean, var board:
         if (batch != null) {
             if (!opened) {
                 if (!selected) {
-                    if (Game.superDebug && mined) batch.color = Color.RED
+                    if (show && mined) batch.color = Color.RED
                     batch.draw(up, getX(), getY(), width, height)
                     batch.color = Color.WHITE
                 } else
